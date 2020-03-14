@@ -326,7 +326,8 @@ def forma(canvas, num_subvales, num_conceptos_vale_a, num_conceptos_vale_b, marg
 
 def calcularMargenY(vales, conceptosA, conceptosB):
     # para calcular el margen automatico
-    print("hacer {} vales con CA: {} CB: {}".format(vales, conceptosA, conceptosB))
+    debug = 0
+    print("hacer {} vales con CA: {} CB: {}".format(vales, conceptosA, conceptosB)) if debug else 0
     altura_vale_a = ESPACIO * 4 + ALTURA_RENGLON * (7 + conceptosA)
     if vales == 2:
         altura_vale_b = ESPACIO * 4 + ALTURA_RENGLON * (7 + conceptosB)

@@ -32,7 +32,7 @@ def llenarVales(vales, usuario):
     :return:    genera el archivo pdf en el directorio outputs
                 con el nombre vale + fecha de gasto +.pdf
     """
-    debug = 0
+    debug = 1
     # filtra solo estas columnas
     valores = vales[["fecha", "semana", "dia", "concepto", "detalles", "importe"]]
 
@@ -41,9 +41,10 @@ def llenarVales(vales, usuario):
 
     # reset al index para poder iterar
     valores.reset_index(drop=True, inplace=True)
-
+    print("valores: ")
+    print(valores.head())
     # SEPARAR EN VALES DIARIOS, MAXIMO 3 CONCEPTOS POR DIA Y AGRUPAR POR SEMANA
-    conceptos_totales = len(valores)
+    conceptos_totales = len(valores.fecha)
     lista_vales = botSeparador(valores, conceptos_totales)
     prints = lista_vales
     print(
@@ -122,6 +123,25 @@ def botCreadorVales(lista_agrupada, valores, usuario):
     saldo_diario2 = ""
     fecha2 = ""
 
+    # VARIABLES DEL SUBVALE 3
+    conceptoA3 = ""
+    conceptoB3 = ""
+    conceptoC3 = ""
+    conceptoD3 = ""
+    conceptoE3 = ""
+    conceptoF3 = ""
+    conceptoG3 = ""
+    conceptoH3 = ""
+    conceptoI3 = ""
+    conceptoJ3 = ""
+    conceptoK3 = ""
+    conceptoL3 = ""
+    conceptoM3 = ""
+    conceptoN3 = ""
+    conceptoO3 = ""
+    saldo_diario3 = ""
+    fecha3 = ""
+
     # SUBDICCIONARIOS
     datos_subvale0 = ()
     datos_subvale1 = ()
@@ -140,10 +160,16 @@ def botCreadorVales(lista_agrupada, valores, usuario):
             conceptosA, = value
             conceptosB = 0
 
-        nombre = "vale"+str(hoja)
-        print("\nhoja: {}, value: {}, size: {}".format(hoja, value, size))
-        print("conceptosA: {}, conceptosB: {}".format(conceptosA, conceptosB))
-        print("conceptos a iterar: {}".format(sum(value)))
+        nombre = "vale" + str(hoja)
+        print("\nhoja: {}, value: {}, size: {}".format(hoja, value, size)) if debug else 0
+        print("conceptosA: {}, conceptosB: {}".format(conceptosA, conceptosB)) if debug else 0
+
+        """
+        #  ----------  AQUI SE CREA EL VALE --------------- 
+        """
+        status = cpv(size, conceptosA, conceptosB, nombre)
+        if status:
+            print("VALE CREADO CORRECTAMENTE\n") if debug else 0
 
         # CREAR UN DICCIONARIO DOBLE, SIEMPRE EMPEZAR POR EL DOBLE, SI NO EXISTE PASAR AL SIMPLE
         if size == 2:
@@ -152,18 +178,15 @@ def botCreadorVales(lista_agrupada, valores, usuario):
             # sumar los conceptos que tiene
             conceptos_por_vale = sum(value)
 
-            # TODO CREAR EL VALE AQUI
-            status = cpv(size, conceptosA, conceptosB, nombre)
-            if status:
-                print("VALE CREADO CORRECTAMENTE")
-
-            print("\n\n{} conceptos por vale doble".format(conceptos_por_vale)) if debug else 0
+            print("{} conceptos por vale doble".format(conceptos_por_vale)) if debug else 0
             # cada vale doble cuenta con 2 subvales individuales iterar por cada uno
             for subvale, conceptos_por_subvale in enumerate(value):
-                print("\nsubvale{}, conceptos por subvale: {}".format(subvale, conceptos_por_subvale)) if debug else 0
+                print("hoja:{} subvale: {}, conceptos por subvale: {}".format(hoja, subvale,
+                                                                              conceptos_por_subvale)) if debug else 0
                 # ahora iterar por cada concepto
-                for concepto in range(1, conceptos_por_subvale+1):
-                    print("hoja: {}, subvale{} - concepto: {}, index: {}".format(hoja, subvale, concepto, index)) if debug else 0
+                for concepto_index in range(1, conceptos_por_subvale + 1):
+                    print("\n")
+                    print("concepto: {}, index: {}".format(concepto_index, index)) if debug else 0
 
                     if subvale == 0:
                         concepto = valores.concepto[index]
@@ -171,52 +194,53 @@ def botCreadorVales(lista_agrupada, valores, usuario):
                         importe = -1 * valores.importe[index]
                         suma += importe
                         importe = str(importe)
-                        if concepto == 1:
+                        if concepto_index == 1:
                             fecha = valores.fecha[index]
-                            conceptoA = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoA) if debug else False
-                        elif concepto == 2:
-                            conceptoB = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoB) if debug else False
-                        elif concepto == 3:
-                            conceptoC = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoC) if debug else False
-                        elif concepto == 4:
-                            conceptoD = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoD) if debug else False
-                        elif concepto == 5:
-                            conceptoE = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoE) if debug else False
-                        elif concepto == 6:
-                            conceptoF = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoF) if debug else False
-                        elif concepto == 7:
-                            conceptoG = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoG) if debug else False
-                        elif concepto == 8:
-                            conceptoH = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoH) if debug else False
-                        elif concepto == 9:
-                            conceptoI = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoI) if debug else False
-                        elif concepto == 10:
-                            conceptoJ = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoJ) if debug else False
-                        elif concepto == 11:
-                            conceptoK = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoK) if debug else False
-                        elif concepto == 12:
-                            conceptoL = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoL) if debug else False
-                        elif concepto == 13:
-                            conceptoM = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoM) if debug else False
-                        elif concepto == 14:
-                            conceptoN = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoN) if debug else False
-                        elif concepto == 15:
-                            conceptoO = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoO) if debug else False
+                            print("fecha: {}".format(fecha))
+                            conceptoA = concepto + ": " + detalle + "-" + "$" + importe
+                            print("conceptoA: {}".format(conceptoA)) if debug else 0
+                        elif concepto_index == 2:
+                            conceptoB = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoB: {}".format(conceptoB)) if debug else 0
+                        elif concepto_index == 3:
+                            conceptoC = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoC: {}".format(conceptoC)) if debug else 0
+                        elif concepto_index == 4:
+                            conceptoD = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoD: {}".format(conceptoD)) if debug else 0
+                        elif concepto_index == 5:
+                            conceptoE = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoE: {}".format(conceptoE)) if debug else 0
+                        elif concepto_index == 6:
+                            conceptoF = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoF: {}".format(conceptoF)) if debug else 0
+                        elif concepto_index == 7:
+                            conceptoG = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoG: {}".format(conceptoG)) if debug else 0
+                        elif concepto_index == 8:
+                            conceptoH = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoH: {}".format(conceptoH)) if debug else 0
+                        elif concepto_index == 9:
+                            conceptoI = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoI: {}".format(conceptoI)) if debug else 0
+                        elif concepto_index == 10:
+                            conceptoJ = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoJ: {}".format(conceptoJ)) if debug else 0
+                        elif concepto_index == 11:
+                            conceptoK = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoK: {}".format(conceptoK)) if debug else 0
+                        elif concepto_index == 12:
+                            conceptoL = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoL: {}".format(conceptoL)) if debug else 0
+                        elif concepto_index == 13:
+                            conceptoM = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoM: {}".format(conceptoM)) if debug else 0
+                        elif concepto_index == 14:
+                            conceptoN = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoN: {}".format(conceptoN)) if debug else 0
+                        elif concepto_index == 15:
+                            conceptoO = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoO: {}".format(conceptoO)) if debug else 0
 
                         # sumar los importes por concepto para generar el importe diario
                         saldo_diario = suma
@@ -228,52 +252,55 @@ def botCreadorVales(lista_agrupada, valores, usuario):
                         importe = -1 * valores.importe[index]
                         suma = importe if concepto == 1 else suma + importe
                         importe = str(importe)
-                        if concepto == 1:
-                            fecha = valores.fecha[index]
-                            conceptoA2 = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoA2) if debug else False
-                        elif concepto == 2:
-                            conceptoB2 = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoB2) if debug else False
-                        elif concepto == 3:
-                            conceptoC2 = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoC2) if debug else False
-                        elif concepto == 4:
-                            conceptoD2 = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoD2) if debug else False
-                        elif concepto == 5:
-                            conceptoE2 = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoE2) if debug else False
-                        elif concepto == 6:
-                            conceptoF2 = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoF2) if debug else False
-                        elif concepto == 7:
-                            conceptoG2 = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoG2) if debug else False
-                        elif concepto == 8:
-                            conceptoH2 = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoH2) if debug else False
-                        elif concepto == 9:
-                            conceptoI2 = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoI2) if debug else False
-                        elif concepto == 10:
-                            conceptoJ2 = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoJ2) if debug else False
-                        elif concepto == 11:
-                            conceptoK2 = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoK2) if debug else False
-                        elif concepto == 12:
-                            conceptoL2 = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoL2) if debug else False
-                        elif concepto == 13:
-                            conceptoM2 = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoM2) if debug else False
-                        elif concepto == 14:
-                            conceptoN2 = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoN2) if debug else False
-                        elif concepto == 15:
-                            conceptoO2 = concepto + ": " + detalle + " - $" + importe
-                            print(conceptoO2) if debug else False
+                        if concepto_index == 1:
+                            # REINICIAR SUMA
+                            suma = 0
+                            fecha2 = valores.fecha[index]
+                            print("fecha: {}".format(fecha2))
+                            conceptoA2 = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoA2: {}".format(conceptoA2)) if debug else 0
+                        elif concepto_index == 2:
+                            conceptoB2 = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoB2: {}".format(conceptoB2)) if debug else 0
+                        elif concepto_index == 3:
+                            conceptoC2 = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoC2: {}".format(conceptoC2)) if debug else 0
+                        elif concepto_index == 4:
+                            conceptoD2 = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoD2: {}".format(conceptoD2)) if debug else 0
+                        elif concepto_index == 5:
+                            conceptoE2 = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoE2: {}".format(conceptoE2)) if debug else 0
+                        elif concepto_index == 6:
+                            conceptoF2 = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoF2: {}".format(conceptoF2)) if debug else 0
+                        elif concepto_index == 7:
+                            conceptoG2 = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoG2: {}".format(conceptoG2)) if debug else 0
+                        elif concepto_index == 8:
+                            conceptoH2 = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoH2: {}".format(conceptoH2)) if debug else 0
+                        elif concepto_index == 9:
+                            conceptoI2 = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoI2: {}".format(conceptoI2)) if debug else 0
+                        elif concepto_index == 10:
+                            conceptoJ2 = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoJ2: {}".format(conceptoJ2)) if debug else 0
+                        elif concepto_index == 11:
+                            conceptoK2 = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoK2: {}".format(conceptoK2)) if debug else 0
+                        elif concepto_index == 12:
+                            conceptoL2 = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoL2: {}".format(conceptoL2)) if debug else 0
+                        elif concepto_index == 13:
+                            conceptoM2 = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoM2: {}".format(conceptoM2)) if debug else 0
+                        elif concepto_index == 14:
+                            conceptoN2 = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoN2: {}".format(conceptoN2)) if debug else 0
+                        elif concepto_index == 15:
+                            conceptoO2 = concepto + ":" + detalle + " - $" + importe
+                            print("conceptoO2: {}".format(conceptoO2)) if debug else 0
 
                         # sumar los importes por concepto para generar el importe diario
                         saldo_diario2 = suma
@@ -281,21 +308,26 @@ def botCreadorVales(lista_agrupada, valores, usuario):
 
                     # aumentar el index
                     index += 1
-                    print("index: {}".format(index))
+                    print("index: {}".format(index)) if debug else 0
 
             # LLENAR TUPLA CON LOS DATOS DE CADA SUBVALE
-            # reiniciar index para la siguiente iteracion
-            index = 0
-            datos_subvale0 = (fecha, conceptoA, conceptoB, conceptoC, saldo_diario)
-            datos_subvale1 = (fecha2, conceptoA2, conceptoB2, conceptoC2, saldo_diario2)
+            datos_subvale0 = (fecha, conceptoA, conceptoB, conceptoC, conceptoD, conceptoE, conceptoF,
+                              conceptoG, conceptoH, conceptoI, conceptoJ, conceptoK, conceptoL,
+                              conceptoM, conceptoN, conceptoO, saldo_diario)
+            print("datos val0: {}".format(datos_subvale0)) if debug else False
+            datos_subvale1 = (fecha2, conceptoA2, conceptoB2, conceptoC2, conceptoD2, conceptoE2, conceptoF2,
+                              conceptoG2, conceptoH2, conceptoI2, conceptoJ2, conceptoK2, conceptoL2,
+                              conceptoM2, conceptoN2, conceptoO2, saldo_diario2)
+            print("datos val1: {}".format(datos_subvale1)) if debug else False
             # LLENAR TUPLA PARA EL VALE
             datos_vale_doble = (datos_subvale0, datos_subvale1)
             diccionario_doble = botllenadordiccionarioDoble(datos_vale_doble, usuario)
-            print("el diccionario doble queda: {}".format(diccionario_doble)) if debug else False
-            #TODO LLENAR FORMULARIO DOBLE PDF
+            # print("el diccionario doble queda: {}".format(diccionario_doble)) if debug else False
+            print("el diccionario doble queda: {}".format(diccionario_doble))  # temporal
+            # TODO LLENAR FORMULARIO DOBLE PDF
             status = botllenadorPlantillas(nombre, diccionario_doble)
             if status:
-                print("VALE LLENADO CORRECTAMENTE")
+                print("VALE LLENADO CORRECTAMENTE") if debug else False
 
         # CREAR UN DICCIONARIO SIMPLE
         elif size == 1:
@@ -303,90 +335,91 @@ def botCreadorVales(lista_agrupada, valores, usuario):
             suma = 0
             conceptos_por_vale_simple = sum(value)
 
-            # TODO CREAR EL VALE AQUI
-            status = cpv(size, conceptosA, conceptosB, nombre)
-            if status:
-                print("VALE CREADO CORRECTAMENTE")
-
-            print("conceptos a iterar: {}".format(conceptos_por_vale_simple))
-            print("\n\n{} conceptos por vale simple".format(conceptos_por_vale)) if debug else 0
+            print("conceptos a iterar: {}".format(conceptos_por_vale_simple)) if debug else 0
+            print("{} conceptos por vale simple".format(conceptos_por_vale)) if debug else 0
             # cada vale simple cuenta con 1 subvale individual no es necesario iterar
             subvale = 0
-            print("\nsubvale{}, conceptos por subvale: {}".format(subvale, conceptos_por_vale_simple)) if debug else 0
-            for concepto in range(1, conceptos_por_vale_simple + 1):
-                print("hoja: {}, subvale{} - concepto: {}, index: {}".format(hoja, subvale, concepto,
-                                                                             index)) if debug else 0
+            print("hoja: {} subvale{}, conceptos por subvale: {}".
+                  format(hoja, subvale, conceptos_por_vale_simple)) if debug else 0
 
-                print("iteracion: {}".format(concepto))
+            for concepto_index in range(1, conceptos_por_vale_simple + 1):
+                print("\n\nconcepto: {}, index: {}".format(concepto, index)) if debug else 0
                 concepto = valores.concepto[index]
                 detalle = valores.detalles[index]
                 importe = -1 * valores.importe[index]
                 suma += importe
                 importe = str(importe)
-                if concepto == 1:
-                    fecha = valores.fecha[index]
-                    conceptoA = concepto + ": " + detalle + " - $" + importe
-                    print(conceptoA) if debug else False
-                elif concepto == 2:
-                    conceptoB = concepto + ": " + detalle + " - $" + importe
-                    print(conceptoB) if debug else False
-                elif concepto == 3:
-                    conceptoC = concepto + ": " + detalle + " - $" + importe
-                    print(conceptoC) if debug else False
-                elif concepto == 4:
-                    conceptoD = concepto + ": " + detalle + " - $" + importe
-                    print(conceptoD) if debug else False
-                elif concepto == 5:
-                    conceptoE = concepto + ": " + detalle + " - $" + importe
-                    print(conceptoE) if debug else False
-                elif concepto == 6:
-                    conceptoF = concepto + ": " + detalle + " - $" + importe
-                    print(conceptoF) if debug else False
-                elif concepto == 7:
-                    conceptoG = concepto + ": " + detalle + " - $" + importe
-                    print(conceptoG) if debug else False
-                elif concepto == 8:
-                    conceptoH = concepto + ": " + detalle + " - $" + importe
-                    print(conceptoH) if debug else False
-                elif concepto == 9:
-                    conceptoI = concepto + ": " + detalle + " - $" + importe
-                    print(conceptoI) if debug else False
-                elif concepto == 10:
-                    conceptoJ = concepto + ": " + detalle + " - $" + importe
-                    print(conceptoJ) if debug else False
-                elif concepto == 11:
-                    conceptoK = concepto + ": " + detalle + " - $" + importe
-                    print(conceptoK) if debug else False
-                elif concepto == 12:
-                    conceptoL = concepto + ": " + detalle + " - $" + importe
-                    print(conceptoL) if debug else False
-                elif concepto == 13:
-                    conceptoM = concepto + ": " + detalle + " - $" + importe
-                    print(conceptoM) if debug else False
-                elif concepto == 14:
-                    conceptoN = concepto + ": " + detalle + " - $" + importe
-                    print(conceptoN) if debug else False
-                elif concepto == 15:
-                    conceptoO = concepto + ": " + detalle + " - $" + importe
-                    print(conceptoO) if debug else False
+                print(" VALE SENCILLOOOOOOOOOOOOOOO")
+                print("VALORES: {} {} {} ".format(concepto, detalle, importe)) if debug else False
+                if concepto_index == 1:
+                    fecha3 = valores.fecha[index]
+                    print("fecha3: {}".format(fecha3))
+                    conceptoA3 = concepto + ":" + detalle + " - $" + importe
+                    print(conceptoA3) if debug else False
+                elif concepto_index == 2:
+                    conceptoB3 = concepto + ":" + detalle + " - $" + importe
+                    print(conceptoB3) if debug else False
+                elif concepto_index == 3:
+                    conceptoC3 = concepto + ":" + detalle + " - $" + importe
+                    print(conceptoC3) if debug else False
+                elif concepto_index == 4:
+                    conceptoD3 = concepto + ":" + detalle + " - $" + importe
+                    print(conceptoD3) if debug else False
+                elif concepto_index == 5:
+                    conceptoE3 = concepto + ":" + detalle + " - $" + importe
+                    print(conceptoE3) if debug else False
+                elif concepto_index == 6:
+                    conceptoF3 = concepto + ":" + detalle + " - $" + importe
+                    print(conceptoF3) if debug else False
+                elif concepto_index == 7:
+                    conceptoG3 = concepto + ":" + detalle + " - $" + importe
+                    print(conceptoG3) if debug else False
+                elif concepto_index == 8:
+                    conceptoH3 = concepto + ":" + detalle + " - $" + importe
+                    print(conceptoH3) if debug else False
+                elif concepto_index == 9:
+                    conceptoI3 = concepto + ":" + detalle + " - $" + importe
+                    print(conceptoI3) if debug else False
+                elif concepto_index == 10:
+                    conceptoJ3 = concepto + ":" + detalle + " - $" + importe
+                    print(conceptoJ3) if debug else False
+                elif concepto_index == 11:
+                    conceptoK3 = concepto + ":" + detalle + " - $" + importe
+                    print(conceptoK3) if debug else False
+                elif concepto_index == 12:
+                    conceptoL3 = concepto + ":" + detalle + " - $" + importe
+                    print(conceptoL3) if debug else False
+                elif concepto_index == 13:
+                    conceptoM3 = concepto + ":" + detalle + " - $" + importe
+                    print(conceptoM3) if debug else False
+                elif concepto_index == 14:
+                    conceptoN3 = concepto + ":" + detalle + " - $" + importe
+                    print(conceptoN3) if debug else False
+                elif concepto_index == 15:
+                    conceptoO3 = concepto + ":" + detalle + " - $" + importe
+                    print(conceptoO3) if debug else False
 
                 # sumar los importes por concepto para generar el importe diario
-                saldo_diario = suma
-                print("saldo diario: {}".format(saldo_diario)) if debug else False
+                saldo_diario3 = suma
+                print("saldo diario: {}".format(saldo_diario3)) if debug else False
 
                 # aumentar el index
                 index += 1
-                print("index: {}".format(index))
+                print("index: {}".format(index)) if debug else 0
 
             # LLENAR TUPLA CON LOS DATOS DE CADA SUBVALE
-            datos_vale_simple = (fecha, conceptoA, conceptoB, conceptoC, saldo_diario)
+            datos_vale_simple = (fecha3, conceptoA3, conceptoB3, conceptoC3, conceptoD3, conceptoE3, conceptoF3,
+                                 conceptoG3, conceptoH3, conceptoI3, conceptoJ3, conceptoK3, conceptoL3,
+                                 conceptoM3, conceptoN3, conceptoO3, saldo_diario3)
+            print("fecha otra vez: {}".format(fecha))
             # LLENAR TUPLA PARA EL VALE
             diccionario_simple = botllenadordiccionarioSimple(datos_vale_simple, usuario)
+            print("el diccionario simple queda: {}".format(diccionario_simple))  # temporal
             print("el diccionario simple queda: {}".format(diccionario_simple)) if debug else 0
-            #TODO LLENAR FORMULARIO DOBLE PDF
+            # TODO LLENAR FORMULARIO DOBLE PDF
             status = botllenadorPlantillas(nombre, diccionario_simple)
             if status:
-                print("VALE LLENADO CORRECTAMENTE")
+                print("VALE LLENADO CORRECTAMENTE") if debug else 0
 
 
 def botAgrupador(lista_vales, vales_dobles, vale_simple):
@@ -497,6 +530,7 @@ def botllenadorPlantillas(nombre_plantilla, diccionario):
     """
     fecha = diccionario["Fecha"]
     fecha = fecha.replace("/", "-")
+    print("fecha: {}".format(fecha))
     nombre_entrada = "plantillas/" + nombre_plantilla + ".pdf"
     nombre_salida = "outputs/vale-" + fecha + ".pdf"
     botllenadorForma(nombre_entrada, nombre_salida, diccionario)
@@ -505,16 +539,31 @@ def botllenadorPlantillas(nombre_plantilla, diccionario):
 
 def botllenadordiccionarioSimple(datos_simples, usuario):
     # FUNCIONANDO OK
-    fecha, conceptoA, conceptoB, conceptoC, importe = datos_simples
-
+    print("datos simples:")
+    print(datos_simples)
+    fecha, conceptoA, conceptoB, conceptoC, conceptoD, conceptoE, conceptoF, \
+    conceptoG, conceptoH, conceptoI, conceptoJ, conceptoK, conceptoL, \
+    conceptoM, conceptoN, conceptoO, importe = datos_simples
     importe_letra = num2wrd(float(importe))
 
     diccionario = {
         'Importe': importe,
         'ImporteLetra': importe_letra,
-        'Concepto A': conceptoA,
-        'Concepto B': conceptoB,
-        'Concepto C': conceptoC,
+        'ConceptoA': conceptoA,
+        'ConceptoB': conceptoB,
+        'ConceptoC': conceptoC,
+        'ConceptoD': conceptoD,
+        'ConceptoE': conceptoE,
+        'ConceptoF': conceptoF,
+        'ConceptoG': conceptoG,
+        'ConceptoH': conceptoH,
+        'ConceptoI': conceptoI,
+        'ConceptoJ': conceptoJ,
+        'ConceptoK': conceptoK,
+        'ConceptoL': conceptoL,
+        'ConceptoM': conceptoM,
+        'ConceptoN': conceptoN,
+        'ConceptoO': conceptoC,
         "Fecha": fecha,
         "Recibido": usuario,
     }
@@ -524,27 +573,55 @@ def botllenadordiccionarioSimple(datos_simples, usuario):
 def botllenadordiccionarioDoble(datos_dobles, usuario):
     # FUNCIONANDO OK
     datos_uno, datos_dos = datos_dobles
-    fecha, conceptoA, conceptoB, conceptoC, importe = datos_uno
-    fecha2, conceptoA2, conceptoB2, conceptoC2, importe2 = datos_dos
+    fecha, conceptoA, conceptoB, conceptoC, conceptoD, conceptoE, conceptoF, \
+    conceptoG, conceptoH, conceptoI, conceptoJ, conceptoK, conceptoL, \
+    conceptoM, conceptoN, conceptoO, importe = datos_uno
+    fecha2, conceptoA2, conceptoB2, conceptoC2, conceptoD2, conceptoE2, conceptoF2, \
+    conceptoG2, conceptoH2, conceptoI2, conceptoJ2, conceptoK2, conceptoL2, \
+    conceptoM2, conceptoN2, conceptoO2, importe2 = datos_dos
 
     importe_letra = num2wrd(float(importe))
     importe_letra2 = num2wrd(float(importe2))
     diccionario = {
         'Importe': importe,
         'ImporteLetra': importe_letra,
-        'Concepto A': conceptoA,
-        'Concepto B': conceptoB,
-        'Concepto C': conceptoC,
+        'ConceptoA': conceptoA,
+        'ConceptoB': conceptoB,
+        'ConceptoC': conceptoC,
+        'ConceptoD': conceptoD,
+        'ConceptoE': conceptoE,
+        'ConceptoF': conceptoF,
+        'ConceptoG': conceptoG,
+        'ConceptoH': conceptoH,
+        'ConceptoI': conceptoI,
+        'ConceptoJ': conceptoJ,
+        'ConceptoK': conceptoK,
+        'ConceptoL': conceptoL,
+        'ConceptoM': conceptoM,
+        'ConceptoN': conceptoN,
+        'ConceptoO': conceptoC,
         "Fecha": fecha,
         "Recibido": usuario,
 
-        'Importe2': importe,
-        'ImporteLetra2': importe_letra,
-        'Concepto A2': conceptoA2,
-        'Concepto B2': conceptoB2,
-        'Concepto C2': conceptoC2,
+        'Importe2': importe2,
+        'ImporteLetra2': importe_letra2,
+        'ConceptoA2': conceptoA2,
+        'ConceptoB2': conceptoB2,
+        'ConceptoC2': conceptoC2,
+        'ConceptoD2': conceptoD2,
+        'ConceptoE2': conceptoE2,
+        'ConceptoF2': conceptoF2,
+        'ConceptoG2': conceptoG2,
+        'ConceptoH2': conceptoH2,
+        'ConceptoI2': conceptoI2,
+        'ConceptoJ2': conceptoJ2,
+        'ConceptoK2': conceptoK2,
+        'ConceptoL2': conceptoL2,
+        'ConceptoM2': conceptoM2,
+        'ConceptoN2': conceptoN2,
+        'ConceptoO2': conceptoC2,
         "Fecha2": fecha2,
-        "Recibido2": usuario
+        "Recibido2": usuario,
     }
     return diccionario
 

@@ -34,7 +34,7 @@ Instrucciones:
 import pandas as pd
 
 from bots.botClasificador import clasificador as classify
-from bots.botClasificador import comprobante as comp
+from bots.botClasificador import tipoComprobante as tipo
 from bots.botContador import saldoDiario as sd
 from bots.botEstructurador import estructurarFecha as ef
 from bots.botEstructurador import estructurarImporte as ei
@@ -111,8 +111,9 @@ data["importe"] = ei(data.importe)
 data["clasificacion"] = classify(data["concepto"])
 data["clasificacion"].fillna(value="otro", inplace=True)
 
-# Crea columna de comprobante de pago
-data["comprobante"] = comp(data["concepto"])
+# Crea columna de comprobante de pago, mapeamos los datos para recibir vale o factura
+data["comprobante"] = tipo(data["concepto"], mapear=True)
+# tratamos los demas valores como facturas
 data["comprobante"].fillna(value="factura", inplace=True)
 
 # --------------- PROCESAMIENTO DEL DATAFRAME ---------------------------

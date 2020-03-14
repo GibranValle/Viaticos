@@ -1,14 +1,21 @@
 """
 Este bot se encarga de agregar una etiqueta en función del contenido del concepto del gasto.
-Adicionalmente discrimina los gastos no deducibles y les agrega la etiqueta "vale"
+Adicionalmente discrimina los gastos no deducibles y les agrega la etiqueta "vale" o "factura"
 en una columna que se llama comprobante.
-
 Gibran Valle
-Revisión final: 29/02/2020
+Revisión final: 14/03/2020
 """
+import pandas as pd
 
 
 def etiquetador(tag, cadena, concepto):
+    """
+    Este bot regresa unicamente indices que cumplan con las condiciones
+    :param tag:
+    :param cadena:
+    :param concepto:
+    :return:
+    """
     test = concepto.str.contains(pat=cadena)
     test = test.map({
         True: tag,
@@ -80,15 +87,30 @@ def clasificador(concepto):
 
     series = [transporte, hospedaje, alimentos, servicios, ingresos]
     categoria = pd.concat(series).sort_index()
-
     return categoria
 
 
-def comprobante(concepto):
-    import pandas as pd
-    serie = pd.Series()
+def tipoComprobante(concepto, mapear):
+    """
+    Este bot encuentra los conceptos que consideramos como no deducibles,
+    los cuales necesitan un vale, buscando el texto taxi
+    Nota: los taxis con factura causan controversia
+    Por lo que se agregó una verificación de que no exista la palabra
+    factura en los conceptos
+    :param concepto:
+    :return: regresa un agrego mapeado de vales
+    """
     tag = "vale"
+    tag2 = "factura"
     cadena = "Taxi|Vale"
-    vales = etiquetador(tag, cadena, concepto)
-    serie = vales
-    return serie
+    cadena2 = "Factura|factura"
+
+    comprobante = concepto.str.contains(cadena) & ~concepto.str.contains(cadena2)
+    # realizar el mapeo aquí ??
+    if mapear:
+        comprobante = comprobante.map({
+            True: tag,
+            False: tag2
+        })
+
+    return comprobante
