@@ -39,7 +39,6 @@ from bots.botContador import saldoDiario as sd
 from bots.botEstructurador import estructurarFecha as ef
 from bots.botEstructurador import estructurarImporte as ei
 from bots.botFormuladorVale import llenarVales as cv
-
 pd.options.mode.chained_assignment = None  # default='warn'
 
 # TAG PARA PDF

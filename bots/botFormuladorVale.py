@@ -7,7 +7,7 @@ Las funciones de este bot son las siguientes:
     4)  Se guarda en la carpeta outputs
 
 Gibran Valle
-Revisión final: 11/03/2020
+Revisión final: 14/03/2020
 
 Nota:
         Se acaba de agregar el generador de plantillas
@@ -21,7 +21,8 @@ import pdfrw
 
 from bots.botContador import numero_a_texto as num2wrd
 from bots.botEstructurador import estructurarImporteNegativo as ein
-
+from bots.botCreadorVale import CrearPlantillaVale as cpv
+import string
 
 # ----------------------------- FUNCIONES LLAMADAS DESDE EL MAIN ---------------------------------------------
 def llenarVales(vales, usuario):
@@ -31,7 +32,7 @@ def llenarVales(vales, usuario):
     :return:    genera el archivo pdf en el directorio outputs
                 con el nombre vale + fecha de gasto +.pdf
     """
-    debug = 1
+    debug = 0
     # filtra solo estas columnas
     valores = vales[["fecha", "semana", "dia", "concepto", "detalles", "importe"]]
 
@@ -44,9 +45,9 @@ def llenarVales(vales, usuario):
     # SEPARAR EN VALES DIARIOS, MAXIMO 3 CONCEPTOS POR DIA Y AGRUPAR POR SEMANA
     conceptos_totales = len(valores)
     lista_vales = botSeparador(valores, conceptos_totales)
-
+    prints = lista_vales
     print(
-        "\n\n{} conceptos no deducibles\nlista de vales separador por dia: {}\n".format(conceptos_totales, lista_vales)) \
+        "\n\n{} conceptos no deducibles\nlista de vales separador por dia: {}\n".format(conceptos_totales, prints)) \
         if debug else 0
 
     # AGRUPA LOS VALES, MAXIMO 2 VALES POR HOJA
@@ -55,7 +56,8 @@ def llenarVales(vales, usuario):
     vales_dobles = int(num_vales / 2)
     vale_simple = num_vales % 2
     lista_agrupada = botAgrupador(lista_vales, vales_dobles, vale_simple)
-
+    print_list = lista_agrupada
+    conceptos_por_vale = []
     print("se llenarán {} vales dobles + {} vale simple\n".format(vales_dobles, vale_simple)) if debug else 0
     print("Hojas de vales: {}\n\nDataframe vales:".format(lista_agrupada)) if debug else 0
 
@@ -75,15 +77,48 @@ def botCreadorVales(lista_agrupada, valores, usuario):
 
     # VARIABLES DEL SUBVALE 0
     fecha = ""
+    # TODO PROBAR EL GENERADOR DE CADENAS
+    # # A - Z
+    # lista_letras = string.ascii_uppercase
+    # nombre_base = "concepto"
+    # for letra in range(26):
+    #     tag = nombre_base + lista_letras[letra]
+    #     print(tag)
+    #     exec(tag + " = 'hello'")
+
     conceptoA = ""
     conceptoB = ""
     conceptoC = ""
+    conceptoD = ""
+    conceptoE = ""
+    conceptoF = ""
+    conceptoG = ""
+    conceptoH = ""
+    conceptoI = ""
+    conceptoJ = ""
+    conceptoK = ""
+    conceptoL = ""
+    conceptoM = ""
+    conceptoN = ""
+    conceptoO = ""
     saldo_diario = ""
 
     # VARIABLES DEL SUBVALE 1
     conceptoA2 = ""
     conceptoB2 = ""
     conceptoC2 = ""
+    conceptoD2 = ""
+    conceptoE2 = ""
+    conceptoF2 = ""
+    conceptoG2 = ""
+    conceptoH2 = ""
+    conceptoI2 = ""
+    conceptoJ2 = ""
+    conceptoK2 = ""
+    conceptoL2 = ""
+    conceptoM2 = ""
+    conceptoN2 = ""
+    conceptoO2 = ""
     saldo_diario2 = ""
     fecha2 = ""
 
@@ -97,7 +132,18 @@ def botCreadorVales(lista_agrupada, valores, usuario):
     for hoja, key in enumerate(lista_agrupada, 1):
         value = lista_agrupada[key]
         size = len(value)
-        #print("\nhoja: {}, value: {}, size: {}".format(hoja, value, size))
+
+        if size == 2:
+            conceptosA, conceptosB = value
+        elif size == 1:
+            # extraer 1 elemento de la tupla usar ","
+            conceptosA, = value
+            conceptosB = 0
+
+        nombre = "vale"+str(hoja)
+        print("\nhoja: {}, value: {}, size: {}".format(hoja, value, size))
+        print("conceptosA: {}, conceptosB: {}".format(conceptosA, conceptosB))
+        print("conceptos a iterar: {}".format(sum(value)))
 
         # CREAR UN DICCIONARIO DOBLE, SIEMPRE EMPEZAR POR EL DOBLE, SI NO EXISTE PASAR AL SIMPLE
         if size == 2:
@@ -105,71 +151,129 @@ def botCreadorVales(lista_agrupada, valores, usuario):
             # intentar iterar por cada valor
             # sumar los conceptos que tiene
             conceptos_por_vale = sum(value)
+
+            # TODO CREAR EL VALE AQUI
+            status = cpv(size, conceptosA, conceptosB, nombre)
+            if status:
+                print("VALE CREADO CORRECTAMENTE")
+
             print("\n\n{} conceptos por vale doble".format(conceptos_por_vale)) if debug else 0
             # cada vale doble cuenta con 2 subvales individuales iterar por cada uno
             for subvale, conceptos_por_subvale in enumerate(value):
                 print("\nsubvale{}, conceptos por subvale: {}".format(subvale, conceptos_por_subvale)) if debug else 0
                 # ahora iterar por cada concepto
-                for concepto in range(conceptos_por_subvale):
+                for concepto in range(1, conceptos_por_subvale+1):
                     print("hoja: {}, subvale{} - concepto: {}, index: {}".format(hoja, subvale, concepto, index)) if debug else 0
 
                     if subvale == 0:
-                        if concepto == 0:
+                        concepto = valores.concepto[index]
+                        detalle = valores.detalles[index]
+                        importe = -1 * valores.importe[index]
+                        suma += importe
+                        importe = str(importe)
+                        if concepto == 1:
                             fecha = valores.fecha[index]
-                            concepto = valores.concepto[index]
-                            detalle = valores.detalles[index]
-                            importe = -1 * valores.importe[index]
-                            suma += importe
-                            importe = str(importe)
                             conceptoA = concepto + ": " + detalle + " - $" + importe
                             print(conceptoA) if debug else False
-                        elif concepto == 1:
-                            concepto = valores.concepto[index]
-                            detalle = valores.detalles[index]
-                            importe = -1 * valores.importe[index]
-                            suma += importe
-                            importe = str(importe)
+                        elif concepto == 2:
                             conceptoB = concepto + ": " + detalle + " - $" + importe
                             print(conceptoB) if debug else False
-                        elif concepto == 2:
-                            concepto = valores.concepto[index]
-                            detalle = valores.detalles[index]
-                            importe = -1 * valores.importe[index]
-                            suma += importe
-                            importe = str(importe)
+                        elif concepto == 3:
                             conceptoC = concepto + ": " + detalle + " - $" + importe
                             print(conceptoC) if debug else False
+                        elif concepto == 4:
+                            conceptoD = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoD) if debug else False
+                        elif concepto == 5:
+                            conceptoE = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoE) if debug else False
+                        elif concepto == 6:
+                            conceptoF = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoF) if debug else False
+                        elif concepto == 7:
+                            conceptoG = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoG) if debug else False
+                        elif concepto == 8:
+                            conceptoH = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoH) if debug else False
+                        elif concepto == 9:
+                            conceptoI = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoI) if debug else False
+                        elif concepto == 10:
+                            conceptoJ = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoJ) if debug else False
+                        elif concepto == 11:
+                            conceptoK = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoK) if debug else False
+                        elif concepto == 12:
+                            conceptoL = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoL) if debug else False
+                        elif concepto == 13:
+                            conceptoM = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoM) if debug else False
+                        elif concepto == 14:
+                            conceptoN = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoN) if debug else False
+                        elif concepto == 15:
+                            conceptoO = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoO) if debug else False
 
                         # sumar los importes por concepto para generar el importe diario
                         saldo_diario = suma
                         print("saldo diario: {}".format(saldo_diario)) if debug else False
 
                     if subvale == 1:
-                        if concepto == 0:
-                            fecha2 = valores.fecha[index]
-                            concepto = valores.concepto[index]
-                            detalle = valores.detalles[index]
-                            importe = -1 * valores.importe[index]
-                            suma += importe
-                            importe = str(importe)
+                        concepto = valores.concepto[index]
+                        detalle = valores.detalles[index]
+                        importe = -1 * valores.importe[index]
+                        suma = importe if concepto == 1 else suma + importe
+                        importe = str(importe)
+                        if concepto == 1:
+                            fecha = valores.fecha[index]
                             conceptoA2 = concepto + ": " + detalle + " - $" + importe
                             print(conceptoA2) if debug else False
-                        elif concepto == 1:
-                            concepto = valores.concepto[index]
-                            detalle = valores.detalles[index]
-                            importe = -1 * valores.importe[index]
-                            suma += importe
-                            importe = str(importe)
+                        elif concepto == 2:
                             conceptoB2 = concepto + ": " + detalle + " - $" + importe
                             print(conceptoB2) if debug else False
-                        elif concepto == 2:
-                            concepto = valores.concepto[index]
-                            detalle = valores.detalles[index]
-                            importe = -1 * valores.importe[index]
-                            suma += importe
-                            importe = str(importe)
+                        elif concepto == 3:
                             conceptoC2 = concepto + ": " + detalle + " - $" + importe
                             print(conceptoC2) if debug else False
+                        elif concepto == 4:
+                            conceptoD2 = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoD2) if debug else False
+                        elif concepto == 5:
+                            conceptoE2 = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoE2) if debug else False
+                        elif concepto == 6:
+                            conceptoF2 = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoF2) if debug else False
+                        elif concepto == 7:
+                            conceptoG2 = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoG2) if debug else False
+                        elif concepto == 8:
+                            conceptoH2 = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoH2) if debug else False
+                        elif concepto == 9:
+                            conceptoI2 = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoI2) if debug else False
+                        elif concepto == 10:
+                            conceptoJ2 = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoJ2) if debug else False
+                        elif concepto == 11:
+                            conceptoK2 = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoK2) if debug else False
+                        elif concepto == 12:
+                            conceptoL2 = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoL2) if debug else False
+                        elif concepto == 13:
+                            conceptoM2 = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoM2) if debug else False
+                        elif concepto == 14:
+                            conceptoN2 = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoN2) if debug else False
+                        elif concepto == 15:
+                            conceptoO2 = concepto + ": " + detalle + " - $" + importe
+                            print(conceptoO2) if debug else False
 
                         # sumar los importes por concepto para generar el importe diario
                         saldo_diario2 = suma
@@ -177,8 +281,11 @@ def botCreadorVales(lista_agrupada, valores, usuario):
 
                     # aumentar el index
                     index += 1
+                    print("index: {}".format(index))
 
             # LLENAR TUPLA CON LOS DATOS DE CADA SUBVALE
+            # reiniciar index para la siguiente iteracion
+            index = 0
             datos_subvale0 = (fecha, conceptoA, conceptoB, conceptoC, saldo_diario)
             datos_subvale1 = (fecha2, conceptoA2, conceptoB2, conceptoC2, saldo_diario2)
             # LLENAR TUPLA PARA EL VALE
@@ -186,61 +293,100 @@ def botCreadorVales(lista_agrupada, valores, usuario):
             diccionario_doble = botllenadordiccionarioDoble(datos_vale_doble, usuario)
             print("el diccionario doble queda: {}".format(diccionario_doble)) if debug else False
             #TODO LLENAR FORMULARIO DOBLE PDF
-            botllenadorPlantillaValeDoble(diccionario_doble)
+            status = botllenadorPlantillas(nombre, diccionario_doble)
+            if status:
+                print("VALE LLENADO CORRECTAMENTE")
 
         # CREAR UN DICCIONARIO SIMPLE
         elif size == 1:
             # reiniciar la suma
             suma = 0
-            conceptos_por_vale = sum(value)
+            conceptos_por_vale_simple = sum(value)
+
+            # TODO CREAR EL VALE AQUI
+            status = cpv(size, conceptosA, conceptosB, nombre)
+            if status:
+                print("VALE CREADO CORRECTAMENTE")
+
+            print("conceptos a iterar: {}".format(conceptos_por_vale_simple))
             print("\n\n{} conceptos por vale simple".format(conceptos_por_vale)) if debug else 0
             # cada vale simple cuenta con 1 subvale individual no es necesario iterar
             subvale = 0
-            print("\nsubvale{}, conceptos por subvale: {}".format(subvale, conceptos_por_vale)) if debug else 0
-            for concepto in range(conceptos_por_vale):
-                print("hoja: {}, subvale{} - concepto: {}, index: {}".format(hoja, subvale, concepto, index)) if debug else 0
+            print("\nsubvale{}, conceptos por subvale: {}".format(subvale, conceptos_por_vale_simple)) if debug else 0
+            for concepto in range(1, conceptos_por_vale_simple + 1):
+                print("hoja: {}, subvale{} - concepto: {}, index: {}".format(hoja, subvale, concepto,
+                                                                             index)) if debug else 0
 
-                if concepto == 0:
+                print("iteracion: {}".format(concepto))
+                concepto = valores.concepto[index]
+                detalle = valores.detalles[index]
+                importe = -1 * valores.importe[index]
+                suma += importe
+                importe = str(importe)
+                if concepto == 1:
                     fecha = valores.fecha[index]
-                    concepto = valores.concepto[index]
-                    detalle = valores.detalles[index]
-                    importe = -1 * valores.importe[index]
-                    suma += importe
-                    importe = str(importe)
                     conceptoA = concepto + ": " + detalle + " - $" + importe
                     print(conceptoA) if debug else False
-                elif concepto == 1:
-                    concepto = valores.concepto[index]
-                    detalle = valores.detalles[index]
-                    importe = -1 * valores.importe[index]
-                    suma += importe
-                    importe = str(importe)
+                elif concepto == 2:
                     conceptoB = concepto + ": " + detalle + " - $" + importe
                     print(conceptoB) if debug else False
-                elif concepto == 2:
-                    concepto = valores.concepto[index]
-                    detalle = valores.detalles[index]
-                    importe = -1 * valores.importe[index]
-                    suma += importe
-                    importe = str(importe)
+                elif concepto == 3:
                     conceptoC = concepto + ": " + detalle + " - $" + importe
                     print(conceptoC) if debug else False
+                elif concepto == 4:
+                    conceptoD = concepto + ": " + detalle + " - $" + importe
+                    print(conceptoD) if debug else False
+                elif concepto == 5:
+                    conceptoE = concepto + ": " + detalle + " - $" + importe
+                    print(conceptoE) if debug else False
+                elif concepto == 6:
+                    conceptoF = concepto + ": " + detalle + " - $" + importe
+                    print(conceptoF) if debug else False
+                elif concepto == 7:
+                    conceptoG = concepto + ": " + detalle + " - $" + importe
+                    print(conceptoG) if debug else False
+                elif concepto == 8:
+                    conceptoH = concepto + ": " + detalle + " - $" + importe
+                    print(conceptoH) if debug else False
+                elif concepto == 9:
+                    conceptoI = concepto + ": " + detalle + " - $" + importe
+                    print(conceptoI) if debug else False
+                elif concepto == 10:
+                    conceptoJ = concepto + ": " + detalle + " - $" + importe
+                    print(conceptoJ) if debug else False
+                elif concepto == 11:
+                    conceptoK = concepto + ": " + detalle + " - $" + importe
+                    print(conceptoK) if debug else False
+                elif concepto == 12:
+                    conceptoL = concepto + ": " + detalle + " - $" + importe
+                    print(conceptoL) if debug else False
+                elif concepto == 13:
+                    conceptoM = concepto + ": " + detalle + " - $" + importe
+                    print(conceptoM) if debug else False
+                elif concepto == 14:
+                    conceptoN = concepto + ": " + detalle + " - $" + importe
+                    print(conceptoN) if debug else False
+                elif concepto == 15:
+                    conceptoO = concepto + ": " + detalle + " - $" + importe
+                    print(conceptoO) if debug else False
 
                 # sumar los importes por concepto para generar el importe diario
                 saldo_diario = suma
                 print("saldo diario: {}".format(saldo_diario)) if debug else False
 
-                # AUMENTAR EL INDEX
+                # aumentar el index
                 index += 1
+                print("index: {}".format(index))
 
             # LLENAR TUPLA CON LOS DATOS DE CADA SUBVALE
-            datos_subvale0 = (fecha, conceptoA, conceptoB, conceptoC, saldo_diario)
+            datos_vale_simple = (fecha, conceptoA, conceptoB, conceptoC, saldo_diario)
             # LLENAR TUPLA PARA EL VALE
-            datos_vale_simple = datos_subvale0
             diccionario_simple = botllenadordiccionarioSimple(datos_vale_simple, usuario)
             print("el diccionario simple queda: {}".format(diccionario_simple)) if debug else 0
-            #TODO LLENAR FORMULARIO PDF
-            botllenadorPlantillaValeSimple(diccionario_simple)
+            #TODO LLENAR FORMULARIO DOBLE PDF
+            status = botllenadorPlantillas(nombre, diccionario_simple)
+            if status:
+                print("VALE LLENADO CORRECTAMENTE")
 
 
 def botAgrupador(lista_vales, vales_dobles, vale_simple):
@@ -340,8 +486,128 @@ def botSeparador(valores, conceptos_totales):
     return lista
 
 
-def botCreadorValesSimple(concepto_por_vale, valores, usuario):
+def botllenadorPlantillas(nombre_plantilla, diccionario):
+    """
+    REEMPLAZA A LAS FUNCIONES:
+        botllenadorPlantillaValeSimple
+        botllenadorPlantillaValeDoble
+    :param nombre_plantilla: archivo .pdf creado con el botCreadorVale
+    :param diccionario: el diccionario creado con el botllenadorDiccionario
+    :return: llena la plantilla, retorna 1 si se creó exitosamente de lo contrario -1
+    """
+    fecha = diccionario["Fecha"]
+    fecha = fecha.replace("/", "-")
+    nombre_entrada = "plantillas/" + nombre_plantilla + ".pdf"
+    nombre_salida = "outputs/vale-" + fecha + ".pdf"
+    botllenadorForma(nombre_entrada, nombre_salida, diccionario)
+    return 1
+
+
+def botllenadordiccionarioSimple(datos_simples, usuario):
     # FUNCIONANDO OK
+    fecha, conceptoA, conceptoB, conceptoC, importe = datos_simples
+
+    importe_letra = num2wrd(float(importe))
+
+    diccionario = {
+        'Importe': importe,
+        'ImporteLetra': importe_letra,
+        'Concepto A': conceptoA,
+        'Concepto B': conceptoB,
+        'Concepto C': conceptoC,
+        "Fecha": fecha,
+        "Recibido": usuario,
+    }
+    return diccionario
+
+
+def botllenadordiccionarioDoble(datos_dobles, usuario):
+    # FUNCIONANDO OK
+    datos_uno, datos_dos = datos_dobles
+    fecha, conceptoA, conceptoB, conceptoC, importe = datos_uno
+    fecha2, conceptoA2, conceptoB2, conceptoC2, importe2 = datos_dos
+
+    importe_letra = num2wrd(float(importe))
+    importe_letra2 = num2wrd(float(importe2))
+    diccionario = {
+        'Importe': importe,
+        'ImporteLetra': importe_letra,
+        'Concepto A': conceptoA,
+        'Concepto B': conceptoB,
+        'Concepto C': conceptoC,
+        "Fecha": fecha,
+        "Recibido": usuario,
+
+        'Importe2': importe,
+        'ImporteLetra2': importe_letra,
+        'Concepto A2': conceptoA2,
+        'Concepto B2': conceptoB2,
+        'Concepto C2': conceptoC2,
+        "Fecha2": fecha2,
+        "Recibido2": usuario
+    }
+    return diccionario
+
+
+def botllenadorForma(input_pdf_path, output_pdf_path, data_dict):
+    # FUNCIONANDO OK
+    ANNOT_KEY = '/Annots'
+    ANNOT_FIELD_KEY = '/T'
+    ANNOT_VAL_KEY = '/V'
+    ANNOT_RECT_KEY = '/Rect'
+    SUBTYPE_KEY = '/Subtype'
+    WIDGET_SUBTYPE_KEY = '/Widget'
+    pantilla_formulario = "plantillas/vale_pantilla.pdf"
+    pantilla_salida = "plantillas/vale.pdf"
+
+    template_pdf = pdfrw.PdfReader(input_pdf_path)
+    template_pdf.Root.AcroForm.update(pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))
+    annotations = template_pdf.pages[0][ANNOT_KEY]
+    for annotation in annotations:
+        if annotation[SUBTYPE_KEY] == WIDGET_SUBTYPE_KEY:
+            if annotation[ANNOT_FIELD_KEY]:
+                key = annotation[ANNOT_FIELD_KEY][1:-1]
+                if key in data_dict.keys():
+                    annotation.update(
+                        pdfrw.PdfDict(V='{}'.format(data_dict[key]))
+                    )
+    pdfrw.PdfWriter().write(output_pdf_path, template_pdf)
+
+
+# ----------------------- FUNCIONES OBSOLETAS NO INCLUIR EN NOTEBOOKS ----------------------------------------------
+# OBSOLETA
+def botllenadorPlantillaValeSimple(diccionario):
+    """
+    ESTA FUNCION ES OBSOLETA USAR botllenadorPlantillas en su lugar
+    :param diccionario:
+    :return:
+    """
+    fecha = diccionario["Fecha"]
+    fecha = fecha.replace("/", "-")
+    botllenadorForma("plantillas/vale_plantilla.pdf", "outputs/vale-" + fecha + ".pdf", diccionario)
+
+
+#OBSOLETA
+def botllenadorPlantillaValeDoble(diccionario):
+    """
+    ESTA FUNCION ES OBSOLETA USAR botllenadorPlantillas en su lugar
+    :param diccionario:
+    :return:
+    """
+    fecha = diccionario["Fecha"]
+    fecha = fecha.replace("/", "-")
+    botllenadorForma("plantillas/vales_plantilla.pdf", "outputs/vales-" + fecha + ".pdf", diccionario)
+
+
+#OBSOLETA
+def botCreadorValesSimple(concepto_por_vale, valores, usuario):
+    """
+    OBSOLETA
+    :param concepto_por_vale:
+    :param valores:
+    :param usuario:
+    :return:
+    """
     # recuperar valores segun la lista de vales_al_dia
     conceptoA = ""
     conceptoB = ""
@@ -376,12 +642,19 @@ def botCreadorValesSimple(concepto_por_vale, valores, usuario):
     datos = (fecha, conceptoA, conceptoB, conceptoC, total_dia)
 
     # LLENAR DICCIONARIO
-    diccionario = botllenadordiccionario(datos, usuario)
+    diccionario = botllenadordiccionarioSimple(datos, usuario)
     return diccionario
 
 
+#OBSOLETA
 def botCreadorValesDoble(concepto_por_vale, valores, usuario):
-    # FUNCIONANDO OK
+    """
+    OBSOLETA
+    :param concepto_por_vale:
+    :param valores:
+    :param usuario:
+    :return:
+    """
     print(valores)
     # recuperar valores segun la lista de vales_al_dia
     debug = 0
@@ -482,95 +755,3 @@ def botCreadorValesDoble(concepto_por_vale, valores, usuario):
     diccionario = botllenadordiccionarioDoble(datos, usuario)
     print(diccionario) if debug else False
     return diccionario
-
-
-def botllenadorPlantillaValeSimple(diccionario):
-    # FUNCIONANDO OK
-    fecha = diccionario["Fecha"]
-    fecha = fecha.replace("/", "-")
-    botllenadorForma("plantillas/vale_plantilla.pdf", "outputs/vale-" + fecha + ".pdf", diccionario)
-
-
-def botllenadorPlantillaValeDoble(diccionario):
-    # FUNCIONANDO OK
-    fecha = diccionario["Fecha"]
-    fecha = fecha.replace("/", "-")
-    botllenadorForma("plantillas/vales_plantilla.pdf", "outputs/vales-" + fecha + ".pdf", diccionario)
-
-
-def botllenadorPlantillaValeDobleB(diccionario):
-    # FUNCIONANDO OK
-    fecha = diccionario["Fecha"]
-    fecha = fecha.replace("/", "-")
-    botllenadorForma("plantillas/vale_plantilla.pdf", "outputs/vale-" + fecha + ".pdf", diccionario)
-
-
-def botllenadordiccionarioSimple(datos_simples, usuario):
-    # FUNCIONANDO OK
-    fecha, conceptoA, conceptoB, conceptoC, importe = datos_simples
-
-    importe_letra = num2wrd(float(importe))
-
-    diccionario = {
-        'Importe': importe,
-        'ImporteLetra': importe_letra,
-        'Concepto A': conceptoA,
-        'Concepto B': conceptoB,
-        'Concepto C': conceptoC,
-        "Fecha": fecha,
-        "Recibido": usuario,
-    }
-    return diccionario
-
-
-def botllenadordiccionarioDoble(datos_dobles, usuario):
-    # FUNCIONANDO OK
-    datos_uno, datos_dos = datos_dobles
-    fecha, conceptoA, conceptoB, conceptoC, importe = datos_uno
-    fecha2, conceptoA2, conceptoB2, conceptoC2, importe2 = datos_dos
-
-    importe_letra = num2wrd(float(importe))
-    importe_letra2 = num2wrd(float(importe2))
-    diccionario = {
-        'Importe': importe,
-        'ImporteLetra': importe_letra,
-        'Concepto A': conceptoA,
-        'Concepto B': conceptoB,
-        'Concepto C': conceptoC,
-        "Fecha": fecha,
-        "Recibido": usuario,
-
-        'Importe2': importe,
-        'ImporteLetra2': importe_letra,
-        'Concepto A2': conceptoA2,
-        'Concepto B2': conceptoB2,
-        'Concepto C2': conceptoC2,
-        "Fecha2": fecha2,
-        "Recibido2": usuario
-    }
-    return diccionario
-
-
-def botllenadorForma(input_pdf_path, output_pdf_path, data_dict):
-    # FUNCIONANDO OK
-    ANNOT_KEY = '/Annots'
-    ANNOT_FIELD_KEY = '/T'
-    ANNOT_VAL_KEY = '/V'
-    ANNOT_RECT_KEY = '/Rect'
-    SUBTYPE_KEY = '/Subtype'
-    WIDGET_SUBTYPE_KEY = '/Widget'
-    pantilla_formulario = "plantillas/vale_pantilla.pdf"
-    pantilla_salida = "plantillas/vale.pdf"
-
-    template_pdf = pdfrw.PdfReader(input_pdf_path)
-    template_pdf.Root.AcroForm.update(pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))
-    annotations = template_pdf.pages[0][ANNOT_KEY]
-    for annotation in annotations:
-        if annotation[SUBTYPE_KEY] == WIDGET_SUBTYPE_KEY:
-            if annotation[ANNOT_FIELD_KEY]:
-                key = annotation[ANNOT_FIELD_KEY][1:-1]
-                if key in data_dict.keys():
-                    annotation.update(
-                        pdfrw.PdfDict(V='{}'.format(data_dict[key]))
-                    )
-    pdfrw.PdfWriter().write(output_pdf_path, template_pdf)

@@ -5,7 +5,8 @@ gastos no deducibles personalizable en pdf.
         CreadorValePlantilla()
 
 Gibran Valle
-Revisión final: 11/03/2020
+Revisión final: 14/03/2020
+FUNCIONANDO CORRECTAMENTE
 """
 from reportlab.lib.colors import black, transparent
 from reportlab.lib.pagesizes import letter
@@ -40,7 +41,7 @@ SIZE_LABEL = 11
 # LIMITES
 LIMITE_CONCEPTOS_VALE_SIMPLE = 16
 LIMITE_CONCEPTOS_VALE_DOBLE = 8
-
+NOMBRE_DEFECTO = "vale_plantilla.pdf"
 # VARIABLES
 largo_cuenta = X1
 largo_nombre = X2 - X1
@@ -55,18 +56,21 @@ CONCEPTOS_EN_VALE_B = 1
 
 
 # ------------------------------- BOT PARA PROYECTO FINAL ---------------------------------------------
-def CrearPlantillaVale(num_subvales, num_conceptos_vale_a, num_conceptos_vale_b):
+def CrearPlantillaVale(num_subvales, num_conceptos_vale_a, num_conceptos_vale_b, nombrePlantilla=NOMBRE_DEFECTO):
     """Crear una plantilla de vale personalizada para el proyectofinal
 
     :param num_subvales: 1 para vales simple, 2 para vale doble
     :param num_conceptos_vale_a: los conceptos en el vale simple o primer subvale
     :param num_conceptos_vale_b: los conceptos en el subvale 2, aplicable solo en vale doble
-    :return: guarda la plantilla en la raiz con el nombre: vale.pdf
+    :param nombrePlantilla: nombre de la plantilla pdf
+    :return: guarda la plantilla en la raiz con el nombre: nombrePlantilla
     Gibran Valle
     Revisión final: 11/03/2020
     """
+    debug = 0
     # 1) INICIAR EL CANVAS
-    cvs = canvas.Canvas('plantilla_vale.pdf', bottomup=0)
+    ruta = "plantillas/" + nombrePlantilla + ".pdf"
+    cvs = canvas.Canvas(ruta, bottomup=0)
     cvs.setPageSize(letter)
 
     # ELEGIR EL COLOR DE CANVAS
@@ -86,9 +90,12 @@ def CrearPlantillaVale(num_subvales, num_conceptos_vale_a, num_conceptos_vale_b)
     # FINALIZAR GUARDANDO EL DOCUMENTO, SOLO SE PUEDE GUARDAR UNA VEZ
     cvs.save()
     if status:
-        print("margen superior: {:.2f}".format(margen_y / cm))
-        print("margen inferior: {:.2f}".format(margen_y_final / cm))
-        print("Vale creado correctamente")
+        print("margen superior: {:.2f}".format(margen_y / cm)) if debug else 0
+        print("margen inferior: {:.2f}".format(margen_y_final / cm)) if debug else 0
+        print("Vale creado correctamente") if debug else 0
+        return 1
+    else:
+        return -1
 
 
 # -------------------------------FUNCIONES PRIVADAS PARA PROYECTO FINAL ---------------------------------------------
@@ -319,6 +326,7 @@ def forma(canvas, num_subvales, num_conceptos_vale_a, num_conceptos_vale_b, marg
 
 def calcularMargenY(vales, conceptosA, conceptosB):
     # para calcular el margen automatico
+    print("hacer {} vales con CA: {} CB: {}".format(vales, conceptosA, conceptosB))
     altura_vale_a = ESPACIO * 4 + ALTURA_RENGLON * (7 + conceptosA)
     if vales == 2:
         altura_vale_b = ESPACIO * 4 + ALTURA_RENGLON * (7 + conceptosB)
@@ -343,13 +351,14 @@ def switch_concepto(num_concepto, sub_vale):
         5: "ConceptoE" + sufijo,
         6: "ConceptoF" + sufijo,
         7: "ConceptoG" + sufijo,
-        9: "ConceptoH" + sufijo,
-        10: "ConceptoI" + sufijo,
-        11: "ConceptoJ" + sufijo,
-        12: "ConceptoK" + sufijo,
-        13: "ConceptoL" + sufijo,
-        14: "ConceptoM" + sufijo,
-        15: "ConceptoN" + sufijo,
+        8: "ConceptoH" + sufijo,
+        9: "ConceptoI" + sufijo,
+        10: "ConceptoJ" + sufijo,
+        11: "ConceptoK" + sufijo,
+        12: "ConceptoL" + sufijo,
+        13: "ConceptoM" + sufijo,
+        14: "ConceptoN" + sufijo,
+        15: "ConceptoO" + sufijo,
     }
     return switcher.get(num_concepto, "concepto invalido")
 
@@ -395,8 +404,3 @@ def validarDatos(num_subvales, num_conceptos_vale_a, num_conceptos_vale_b):
     elif num_subvales > 2:
         print("ERROR: VALE DEMASIADO GRANDE")
         return -1
-
-
-# ----------------------------------------- PRUEBA DE BOT ---------------------------------------------
-# PROBAR EL BOT CON LAS CONSTANTES
-CrearPlantillaVale(VALES_POR_HOJA, CONCEPTOS_EN_VALE_A, CONCEPTOS_EN_VALE_B)
