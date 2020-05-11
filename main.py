@@ -85,6 +85,11 @@ final_columns = [
     "clasificacion",
     "grupo"
 ]
+ingreso_col = [
+    "semana",
+    "fecha",
+    "importe",
+]
 
 # --------------- INICIO DEL PROGRAMA ------------------------------------
 # cargar archivo xls en el directorio
@@ -131,11 +136,20 @@ data["orden"] = ""
 positivos = data[data.importe > 0]
 ingresos = pd.DataFrame(positivos)
 ingresos.reset_index(drop=True, inplace=True)  # drop para no agregar la columna de indices viejos
+# elegir unicamente las columnas ingreso_col
+ingresos = ingresos[ingreso_col]
+ingresos["detalles"] = ""
+# elegir la primer columna de la serie detalles
+ingresos["detalles"][0] = "INICIO DE MES"
+print("\ndataframe ingresos:", ingresos)
+# guardar como otro archivo
+ingresos.to_excel("outputs/ingresos2020.xlsx", index=False)
 
 # actualizar dataframe sin ingresos
 data = data[data.importe < 0]
 data.reset_index(drop=True, inplace=True)  # drop para no agregar la columna de indices viejos
 data["saldo diario"] = sd(data.semana, data.dia, data.importe)
+print("saldo: {}".format(data["saldo diario"]))
 
 # organizar columnas conforme a la lista nueva
 data = data[final_columns]

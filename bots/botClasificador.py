@@ -102,7 +102,7 @@ def tipoComprobante(concepto, mapear):
     """
     tag = "vale"
     tag2 = "factura"
-    cadena = "Taxi|Vale"
+    cadena = "Taxi|Vale|vale|taxi"
     cadena2 = "Factura|factura"
 
     comprobante = concepto.str.contains(cadena) & ~concepto.str.contains(cadena2)

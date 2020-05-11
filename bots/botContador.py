@@ -10,42 +10,48 @@ Revisión final: 29/02/2020
 
 def saldoDiario(semanas, dias, importes):
     import pandas as pd
+    debug = 1
     # CALCULAR EL SALDO DIARIO
-    # VARIABLES A RETORNAR
-
-    n = 0
-    m = 0
+    offset = 0
     suma = 0.0
     semana = 0
     dia = 0
     contador = 0
     saldo = []
-    for i in semanas:
+    fin = len(semanas)
+    for index, i in enumerate(semanas):
         # VALORES INICIALES
-        if n == 0:
-            semana = semanas[n]
-            dia = dias[n]
+        if index == 0:
+            semana = semanas[index]
+            dia = dias[index]
         # SI ESTÁ DENTRO DE LA MISMA SEMANA
-        if semana == semanas[n] and dia == dias[n]:
+        if semana == semanas[index] and dia == dias[index]:
             contador += 1
-            suma += importes[n]
-            # print(" -  week: day: count:  sum: ".format(n, semana, dia, contador, suma))
+            suma += importes[index]
+            print(
+                "{} -  week: {} day: {} count: {} sum: {} ".format(index, semana, dia, contador, suma)) if debug else 0
         # ROMPE CORTA LA SUMA
-        if semana != semanas[n] or dia != dias[n]:
-            # forzar un ciclo for
-            for i in range(m, n + 1):
+        if semana != semanas[index] or dia != dias[index] or index == fin - 1:
+            # sub_offset para el fin de la iteración
+            if index != fin - 1:
+                sub_offset = 0
+            else:
+                sub_offset = 1
+            # crear el vector saldo
+            for j in range(offset, index + sub_offset):
                 saldo.append(suma)
             # desplazamiento
-            m = n
-            contador = 0
+            offset = index
+            contador = 1
             # empieza a sumar el entero nuevo
-            suma = importes[n]
-            if semana != semanas[n]:
-                semana = semanas[n]
-            if dia != dias[n]:
-                dia = dias[n]
-            # print(" -  week: day: count:  sum: ".format(n, semana, dia, contador, suma))
-        n += 1
+            print("saldo diario: {}".format(suma)) if debug else 0
+            suma = importes[index]
+            if semana != semanas[index]:
+                semana = semanas[index]
+            if dia != dias[index]:
+                dia = dias[index]
+            print(
+                "{} -  week: {} day: {} count: {} sum: {} ".format(index, semana, dia, contador, suma)) if debug else 0
 
     saldo_diario = pd.Series(saldo)
     return saldo_diario

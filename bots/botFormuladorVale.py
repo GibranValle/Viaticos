@@ -24,6 +24,14 @@ from bots.botEstructurador import estructurarImporteNegativo as ein
 from bots.botCreadorVale import CrearPlantillaVale as cpv
 import string
 
+# CARACTERES MAXIMO
+MAXIMOS_RENGLON_ENTERO = 87
+MAXIMOS_RENGLON_ENTERO_LETRA = 77
+MAXIMOS_RENGLON_FECHA = 25
+MAXIMOS_RENGLON_IMPORTE = 15
+MAXIMOS_RENGLON_USUARIO = 20
+
+
 # ----------------------------- FUNCIONES LLAMADAS DESDE EL MAIN ---------------------------------------------
 def llenarVales(vales, usuario):
     """ Llena la plantilla que ahora se va a generar automáticamente
@@ -48,7 +56,7 @@ def llenarVales(vales, usuario):
     lista_vales = botSeparador(valores, conceptos_totales)
     prints = lista_vales
     print(
-        "\n\n{} conceptos no deducibles\nlista de vales separador por dia: {}\n".format(conceptos_totales, prints)) \
+        "{} conceptos no deducibles\nlista de vales separador por dia: {}\n".format(conceptos_totales, prints)) \
         if debug else 0
 
     # AGRUPA LOS VALES, MAXIMO 2 VALES POR HOJA
@@ -181,11 +189,11 @@ def botCreadorVales(lista_agrupada, valores, usuario):
             print("{} conceptos por vale doble".format(conceptos_por_vale)) if debug else 0
             # cada vale doble cuenta con 2 subvales individuales iterar por cada uno
             for subvale, conceptos_por_subvale in enumerate(value):
+                suma = 0
                 print("hoja:{} subvale: {}, conceptos por subvale: {}".format(hoja, subvale,
                                                                               conceptos_por_subvale)) if debug else 0
                 # ahora iterar por cada concepto
                 for concepto_index in range(1, conceptos_por_subvale + 1):
-                    print("\n")
                     print("concepto: {}, index: {}".format(concepto_index, index)) if debug else 0
 
                     if subvale == 0:
@@ -196,56 +204,70 @@ def botCreadorVales(lista_agrupada, valores, usuario):
                         importe = str(importe)
                         if concepto_index == 1:
                             fecha = valores.fecha[index]
-                            print("fecha: {}".format(fecha))
-                            conceptoA = concepto + ": " + detalle + "-" + "$" + importe
+                            fecha = fecha.center(MAXIMOS_RENGLON_FECHA)
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoA = concepto.center(MAXIMOS_RENGLON_ENTERO)
                             print("conceptoA: {}".format(conceptoA)) if debug else 0
                         elif concepto_index == 2:
-                            conceptoB = concepto + ":" + detalle + " - $" + importe
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoB = concepto.center(MAXIMOS_RENGLON_ENTERO)
                             print("conceptoB: {}".format(conceptoB)) if debug else 0
                         elif concepto_index == 3:
-                            conceptoC = concepto + ":" + detalle + " - $" + importe
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoC = concepto.center(MAXIMOS_RENGLON_ENTERO)
                             print("conceptoC: {}".format(conceptoC)) if debug else 0
                         elif concepto_index == 4:
-                            conceptoD = concepto + ":" + detalle + " - $" + importe
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoD = concepto.center(MAXIMOS_RENGLON_ENTERO)
                             print("conceptoD: {}".format(conceptoD)) if debug else 0
                         elif concepto_index == 5:
-                            conceptoE = concepto + ":" + detalle + " - $" + importe
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoE = concepto.center(MAXIMOS_RENGLON_ENTERO)
                             print("conceptoE: {}".format(conceptoE)) if debug else 0
                         elif concepto_index == 6:
-                            conceptoF = concepto + ":" + detalle + " - $" + importe
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoF = concepto.center(MAXIMOS_RENGLON_ENTERO)
                             print("conceptoF: {}".format(conceptoF)) if debug else 0
                         elif concepto_index == 7:
-                            conceptoG = concepto + ":" + detalle + " - $" + importe
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoG = concepto.center(MAXIMOS_RENGLON_ENTERO)
                             print("conceptoG: {}".format(conceptoG)) if debug else 0
                         elif concepto_index == 8:
-                            conceptoH = concepto + ":" + detalle + " - $" + importe
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoH = concepto.center(MAXIMOS_RENGLON_ENTERO)
                             print("conceptoH: {}".format(conceptoH)) if debug else 0
                         elif concepto_index == 9:
-                            conceptoI = concepto + ":" + detalle + " - $" + importe
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoI = concepto.center(MAXIMOS_RENGLON_ENTERO)
                             print("conceptoI: {}".format(conceptoI)) if debug else 0
                         elif concepto_index == 10:
-                            conceptoJ = concepto + ":" + detalle + " - $" + importe
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoJ = concepto.center(MAXIMOS_RENGLON_ENTERO)
                             print("conceptoJ: {}".format(conceptoJ)) if debug else 0
                         elif concepto_index == 11:
-                            conceptoK = concepto + ":" + detalle + " - $" + importe
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoK = concepto.center(MAXIMOS_RENGLON_ENTERO)
                             print("conceptoK: {}".format(conceptoK)) if debug else 0
                         elif concepto_index == 12:
-                            conceptoL = concepto + ":" + detalle + " - $" + importe
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoL = concepto.center(MAXIMOS_RENGLON_ENTERO)
                             print("conceptoL: {}".format(conceptoL)) if debug else 0
                         elif concepto_index == 13:
-                            conceptoM = concepto + ":" + detalle + " - $" + importe
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoM = concepto.center(MAXIMOS_RENGLON_ENTERO)
                             print("conceptoM: {}".format(conceptoM)) if debug else 0
                         elif concepto_index == 14:
-                            conceptoN = concepto + ":" + detalle + " - $" + importe
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoN = concepto.center(MAXIMOS_RENGLON_ENTERO)
                             print("conceptoN: {}".format(conceptoN)) if debug else 0
                         elif concepto_index == 15:
-                            conceptoO = concepto + ":" + detalle + " - $" + importe
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoO = concepto.center(MAXIMOS_RENGLON_ENTERO)
                             print("conceptoO: {}".format(conceptoO)) if debug else 0
 
                         # sumar los importes por concepto para generar el importe diario
                         saldo_diario = suma
                         print("saldo diario: {}".format(saldo_diario)) if debug else False
-
                     if subvale == 1:
                         concepto = valores.concepto[index]
                         detalle = valores.detalles[index]
@@ -253,55 +275,67 @@ def botCreadorVales(lista_agrupada, valores, usuario):
                         suma = importe if concepto == 1 else suma + importe
                         importe = str(importe)
                         if concepto_index == 1:
-                            # REINICIAR SUMA
-                            suma = 0
                             fecha2 = valores.fecha[index]
-                            print("fecha: {}".format(fecha2))
-                            conceptoA2 = concepto + ":" + detalle + " - $" + importe
-                            print("conceptoA2: {}".format(conceptoA2)) if debug else 0
+                            fecha2 = fecha2.center(MAXIMOS_RENGLON_FECHA)
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoA2 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                            print("conceptoA: {}".format(conceptoA)) if debug else 0
                         elif concepto_index == 2:
-                            conceptoB2 = concepto + ":" + detalle + " - $" + importe
-                            print("conceptoB2: {}".format(conceptoB2)) if debug else 0
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoB2 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                            print("conceptoB: {}".format(conceptoB)) if debug else 0
                         elif concepto_index == 3:
-                            conceptoC2 = concepto + ":" + detalle + " - $" + importe
-                            print("conceptoC2: {}".format(conceptoC2)) if debug else 0
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoC2 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                            print("conceptoC: {}".format(conceptoC)) if debug else 0
                         elif concepto_index == 4:
-                            conceptoD2 = concepto + ":" + detalle + " - $" + importe
-                            print("conceptoD2: {}".format(conceptoD2)) if debug else 0
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoD2 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                            print("conceptoD: {}".format(conceptoD)) if debug else 0
                         elif concepto_index == 5:
-                            conceptoE2 = concepto + ":" + detalle + " - $" + importe
-                            print("conceptoE2: {}".format(conceptoE2)) if debug else 0
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoE2 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                            print("conceptoE: {}".format(conceptoE)) if debug else 0
                         elif concepto_index == 6:
-                            conceptoF2 = concepto + ":" + detalle + " - $" + importe
-                            print("conceptoF2: {}".format(conceptoF2)) if debug else 0
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoF2 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                            print("conceptoF: {}".format(conceptoF)) if debug else 0
                         elif concepto_index == 7:
-                            conceptoG2 = concepto + ":" + detalle + " - $" + importe
-                            print("conceptoG2: {}".format(conceptoG2)) if debug else 0
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoG2 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                            print("conceptoG: {}".format(conceptoG)) if debug else 0
                         elif concepto_index == 8:
-                            conceptoH2 = concepto + ":" + detalle + " - $" + importe
-                            print("conceptoH2: {}".format(conceptoH2)) if debug else 0
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoH2 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                            print("conceptoH: {}".format(conceptoH)) if debug else 0
                         elif concepto_index == 9:
-                            conceptoI2 = concepto + ":" + detalle + " - $" + importe
-                            print("conceptoI2: {}".format(conceptoI2)) if debug else 0
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoI2 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                            print("conceptoI: {}".format(conceptoI)) if debug else 0
                         elif concepto_index == 10:
-                            conceptoJ2 = concepto + ":" + detalle + " - $" + importe
-                            print("conceptoJ2: {}".format(conceptoJ2)) if debug else 0
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoJ2 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                            print("conceptoJ: {}".format(conceptoJ)) if debug else 0
                         elif concepto_index == 11:
-                            conceptoK2 = concepto + ":" + detalle + " - $" + importe
-                            print("conceptoK2: {}".format(conceptoK2)) if debug else 0
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoK2 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                            print("conceptoK: {}".format(conceptoK)) if debug else 0
                         elif concepto_index == 12:
-                            conceptoL2 = concepto + ":" + detalle + " - $" + importe
-                            print("conceptoL2: {}".format(conceptoL2)) if debug else 0
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoL2 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                            print("conceptoL: {}".format(conceptoL)) if debug else 0
                         elif concepto_index == 13:
-                            conceptoM2 = concepto + ":" + detalle + " - $" + importe
-                            print("conceptoM2: {}".format(conceptoM2)) if debug else 0
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoM2 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                            print("conceptoM: {}".format(conceptoM)) if debug else 0
                         elif concepto_index == 14:
-                            conceptoN2 = concepto + ":" + detalle + " - $" + importe
-                            print("conceptoN2: {}".format(conceptoN2)) if debug else 0
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoN2 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                            print("conceptoN: {}".format(conceptoN)) if debug else 0
                         elif concepto_index == 15:
-                            conceptoO2 = concepto + ":" + detalle + " - $" + importe
-                            print("conceptoO2: {}".format(conceptoO2)) if debug else 0
-
+                            concepto = concepto + ": " + detalle + " - $" + importe
+                            conceptoO2 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                            print("conceptoO: {}".format(conceptoO)) if debug else 0
                         # sumar los importes por concepto para generar el importe diario
                         saldo_diario2 = suma
                         print("saldo diario: {}".format(saldo_diario2)) if debug else False
@@ -322,8 +356,7 @@ def botCreadorVales(lista_agrupada, valores, usuario):
             # LLENAR TUPLA PARA EL VALE
             datos_vale_doble = (datos_subvale0, datos_subvale1)
             diccionario_doble = botllenadordiccionarioDoble(datos_vale_doble, usuario)
-            # print("el diccionario doble queda: {}".format(diccionario_doble)) if debug else False
-            print("el diccionario doble queda: {}".format(diccionario_doble))  # temporal
+            print("el diccionario doble queda: {}".format(diccionario_doble)) if debug else False
             # TODO LLENAR FORMULARIO DOBLE PDF
             status = botllenadorPlantillas(nombre, diccionario_doble)
             if status:
@@ -343,66 +376,80 @@ def botCreadorVales(lista_agrupada, valores, usuario):
                   format(hoja, subvale, conceptos_por_vale_simple)) if debug else 0
 
             for concepto_index in range(1, conceptos_por_vale_simple + 1):
-                print("\n\nconcepto: {}, index: {}".format(concepto, index)) if debug else 0
+                print("\nconcepto: {}, index: {}".format(concepto, index)) if debug else 0
                 concepto = valores.concepto[index]
                 detalle = valores.detalles[index]
                 importe = -1 * valores.importe[index]
                 suma += importe
                 importe = str(importe)
-                print(" VALE SENCILLOOOOOOOOOOOOOOO")
+                print(" VALE SENCILLO") if debug else 0
                 print("VALORES: {} {} {} ".format(concepto, detalle, importe)) if debug else False
                 if concepto_index == 1:
                     fecha3 = valores.fecha[index]
-                    print("fecha3: {}".format(fecha3))
-                    conceptoA3 = concepto + ":" + detalle + " - $" + importe
-                    print(conceptoA3) if debug else False
+                    fecha3 = fecha3.center(MAXIMOS_RENGLON_FECHA)
+                    concepto = concepto + ": " + detalle + " - $" + importe
+                    conceptoA3 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                    print("conceptoA: {}".format(conceptoA)) if debug else 0
                 elif concepto_index == 2:
-                    conceptoB3 = concepto + ":" + detalle + " - $" + importe
-                    print(conceptoB3) if debug else False
+                    concepto = concepto + ": " + detalle + " - $" + importe
+                    conceptoB3 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                    print("conceptoB: {}".format(conceptoB)) if debug else 0
                 elif concepto_index == 3:
-                    conceptoC3 = concepto + ":" + detalle + " - $" + importe
-                    print(conceptoC3) if debug else False
+                    concepto = concepto + ": " + detalle + " - $" + importe
+                    conceptoC3 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                    print("conceptoC: {}".format(conceptoC)) if debug else 0
                 elif concepto_index == 4:
-                    conceptoD3 = concepto + ":" + detalle + " - $" + importe
-                    print(conceptoD3) if debug else False
+                    concepto = concepto + ": " + detalle + " - $" + importe
+                    conceptoD3 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                    print("conceptoD: {}".format(conceptoD)) if debug else 0
                 elif concepto_index == 5:
-                    conceptoE3 = concepto + ":" + detalle + " - $" + importe
-                    print(conceptoE3) if debug else False
+                    concepto = concepto + ": " + detalle + " - $" + importe
+                    conceptoE3 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                    print("conceptoE: {}".format(conceptoE)) if debug else 0
                 elif concepto_index == 6:
-                    conceptoF3 = concepto + ":" + detalle + " - $" + importe
-                    print(conceptoF3) if debug else False
+                    concepto = concepto + ": " + detalle + " - $" + importe
+                    conceptoF3 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                    print("conceptoF: {}".format(conceptoF)) if debug else 0
                 elif concepto_index == 7:
-                    conceptoG3 = concepto + ":" + detalle + " - $" + importe
-                    print(conceptoG3) if debug else False
+                    concepto = concepto + ": " + detalle + " - $" + importe
+                    conceptoG3 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                    print("conceptoG: {}".format(conceptoG)) if debug else 0
                 elif concepto_index == 8:
-                    conceptoH3 = concepto + ":" + detalle + " - $" + importe
-                    print(conceptoH3) if debug else False
+                    concepto = concepto + ": " + detalle + " - $" + importe
+                    conceptoH3 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                    print("conceptoH: {}".format(conceptoH)) if debug else 0
                 elif concepto_index == 9:
-                    conceptoI3 = concepto + ":" + detalle + " - $" + importe
-                    print(conceptoI3) if debug else False
+                    concepto = concepto + ": " + detalle + " - $" + importe
+                    conceptoI3 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                    print("conceptoI: {}".format(conceptoI)) if debug else 0
                 elif concepto_index == 10:
-                    conceptoJ3 = concepto + ":" + detalle + " - $" + importe
-                    print(conceptoJ3) if debug else False
+                    concepto = concepto + ": " + detalle + " - $" + importe
+                    conceptoJ3 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                    print("conceptoJ: {}".format(conceptoJ)) if debug else 0
                 elif concepto_index == 11:
-                    conceptoK3 = concepto + ":" + detalle + " - $" + importe
-                    print(conceptoK3) if debug else False
+                    concepto = concepto + ": " + detalle + " - $" + importe
+                    conceptoK3 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                    print("conceptoK: {}".format(conceptoK)) if debug else 0
                 elif concepto_index == 12:
-                    conceptoL3 = concepto + ":" + detalle + " - $" + importe
-                    print(conceptoL3) if debug else False
+                    concepto = concepto + ": " + detalle + " - $" + importe
+                    conceptoL3 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                    print("conceptoL: {}".format(conceptoL)) if debug else 0
                 elif concepto_index == 13:
-                    conceptoM3 = concepto + ":" + detalle + " - $" + importe
-                    print(conceptoM3) if debug else False
+                    concepto = concepto + ": " + detalle + " - $" + importe
+                    conceptoM3 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                    print("conceptoM: {}".format(conceptoM)) if debug else 0
                 elif concepto_index == 14:
-                    conceptoN3 = concepto + ":" + detalle + " - $" + importe
-                    print(conceptoN3) if debug else False
+                    concepto = concepto + ": " + detalle + " - $" + importe
+                    conceptoN3 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                    print("conceptoN: {}".format(conceptoN)) if debug else 0
                 elif concepto_index == 15:
-                    conceptoO3 = concepto + ":" + detalle + " - $" + importe
-                    print(conceptoO3) if debug else False
+                    concepto = concepto + ": " + detalle + " - $" + importe
+                    conceptoO3 = concepto.center(MAXIMOS_RENGLON_ENTERO)
+                    print("conceptoO: {}".format(conceptoO)) if debug else 0
 
                 # sumar los importes por concepto para generar el importe diario
                 saldo_diario3 = suma
                 print("saldo diario: {}".format(saldo_diario3)) if debug else False
-
                 # aumentar el index
                 index += 1
                 print("index: {}".format(index)) if debug else 0
@@ -411,10 +458,8 @@ def botCreadorVales(lista_agrupada, valores, usuario):
             datos_vale_simple = (fecha3, conceptoA3, conceptoB3, conceptoC3, conceptoD3, conceptoE3, conceptoF3,
                                  conceptoG3, conceptoH3, conceptoI3, conceptoJ3, conceptoK3, conceptoL3,
                                  conceptoM3, conceptoN3, conceptoO3, saldo_diario3)
-            print("fecha otra vez: {}".format(fecha))
             # LLENAR TUPLA PARA EL VALE
             diccionario_simple = botllenadordiccionarioSimple(datos_vale_simple, usuario)
-            print("el diccionario simple queda: {}".format(diccionario_simple))  # temporal
             print("el diccionario simple queda: {}".format(diccionario_simple)) if debug else 0
             # TODO LLENAR FORMULARIO DOBLE PDF
             status = botllenadorPlantillas(nombre, diccionario_simple)
@@ -530,7 +575,7 @@ def botllenadorPlantillas(nombre_plantilla, diccionario):
     """
     fecha = diccionario["Fecha"]
     fecha = fecha.replace("/", "-")
-    print("fecha: {}".format(fecha))
+    fecha = fecha.replace(" ", "")
     nombre_entrada = "plantillas/" + nombre_plantilla + ".pdf"
     nombre_salida = "outputs/vale-" + fecha + ".pdf"
     botllenadorForma(nombre_entrada, nombre_salida, diccionario)
@@ -539,13 +584,15 @@ def botllenadorPlantillas(nombre_plantilla, diccionario):
 
 def botllenadordiccionarioSimple(datos_simples, usuario):
     # FUNCIONANDO OK
-    print("datos simples:")
-    print(datos_simples)
     fecha, conceptoA, conceptoB, conceptoC, conceptoD, conceptoE, conceptoF, \
     conceptoG, conceptoH, conceptoI, conceptoJ, conceptoK, conceptoL, \
     conceptoM, conceptoN, conceptoO, importe = datos_simples
     importe_letra = num2wrd(float(importe))
-
+    # centrar
+    importe_letra = importe_letra.center(MAXIMOS_RENGLON_ENTERO_LETRA)
+    usuario = usuario.center(MAXIMOS_RENGLON_USUARIO)
+    importe = str(importe)
+    importe = importe.center(MAXIMOS_RENGLON_IMPORTE)
     diccionario = {
         'Importe': importe,
         'ImporteLetra': importe_letra,
@@ -582,6 +629,16 @@ def botllenadordiccionarioDoble(datos_dobles, usuario):
 
     importe_letra = num2wrd(float(importe))
     importe_letra2 = num2wrd(float(importe2))
+
+    # centrar
+    importe_letra = importe_letra.center(MAXIMOS_RENGLON_ENTERO_LETRA)
+    importe = str(importe)
+    importe = importe.center(MAXIMOS_RENGLON_IMPORTE)
+    # centrar
+    importe_letra2 = importe_letra2.center(MAXIMOS_RENGLON_ENTERO_LETRA)
+    usuario = usuario.center(MAXIMOS_RENGLON_USUARIO)
+    importe2 = str(importe2)
+    importe2 = importe2.center(MAXIMOS_RENGLON_IMPORTE)
     diccionario = {
         'Importe': importe,
         'ImporteLetra': importe_letra,
@@ -752,7 +809,6 @@ def botCreadorValesDoble(concepto_por_vale, valores, usuario):
     datos_uno = ()
     datos_dos = ()
 
-    print("\n")
     index_inicial = 0
     # index para un loop que no empieza en 0
     for index, i in enumerate(concepto_por_vale):
