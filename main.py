@@ -149,7 +149,7 @@ ingresos.to_excel("outputs/ingresos2020.xlsx", index=False)
 data = data[data.importe < 0]
 data.reset_index(drop=True, inplace=True)  # drop para no agregar la columna de indices viejos
 data["saldo diario"] = sd(data.semana, data.dia, data.importe)
-print("saldo: {}".format(data["saldo diario"]))
+# print("saldo: {}".format(data["saldo diario"]))
 
 # organizar columnas conforme a la lista nueva
 data = data[final_columns]

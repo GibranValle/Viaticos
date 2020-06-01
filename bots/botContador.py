@@ -10,7 +10,7 @@ Revisión final: 29/02/2020
 
 def saldoDiario(semanas, dias, importes):
     import pandas as pd
-    debug = 1
+    debug = 0
     # CALCULAR EL SALDO DIARIO
     offset = 0
     suma = 0.0
