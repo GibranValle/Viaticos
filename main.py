@@ -1,6 +1,7 @@
 """
 Proyecto final del curso: "Python en el ámbito científico"
 IPN CIC 2020
+REVISION FINAL: 08/06/2020
 
 Gibran Valle
 Revisión final: 13/03/2020
@@ -161,4 +162,3 @@ data.drop(["mes"], axis=1, inplace=True)
 data.to_excel("outputs/viaticos2020.xlsx", index=False)
 print("\nDataframe final:")
 print(data.head())
-
