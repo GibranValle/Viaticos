@@ -141,7 +141,7 @@ ingresos = ingresos[ingreso_col]
 ingresos["detalles"] = ""
 # elegir la primer columna de la serie detalles
 ingresos["detalles"][0] = "INICIO DE MES"
-print("\ndataframe ingresos:", ingresos)
+print("\ndataframe ingresos:\n", ingresos)
 # guardar como otro archivo
 ingresos.to_excel("outputs/ingresos2020.xlsx", index=False)
 

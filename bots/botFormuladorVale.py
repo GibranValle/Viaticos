@@ -40,7 +40,7 @@ def llenarVales(vales, usuario):
     :return:    genera el archivo pdf en el directorio outputs
                 con el nombre vale + fecha de gasto +.pdf
     """
-    debug = 1
+    debug = 0
     # filtra solo estas columnas
     valores = vales[["fecha", "semana", "dia", "concepto", "detalles", "importe", "grupo"]]
 
@@ -49,8 +49,8 @@ def llenarVales(vales, usuario):
 
     # reset al index para poder iterar
     valores.reset_index(drop=True, inplace=True)
-    print("valores: ")
-    print(valores.head())
+    print("valores: ") if debug else 0
+    print(valores.head()) if debug else 0
     # SEPARAR EN VALES DIARIOS, MAXIMO 3 CONCEPTOS POR DIA Y AGRUPAR POR SEMANA
     conceptos_totales = len(valores.fecha)
     lista_vales = botSeparador(valores, conceptos_totales)
@@ -68,12 +68,17 @@ def llenarVales(vales, usuario):
 # ---------------------- BOTS QUE YA FUNCIONAN Y ESTAN PROBADOS ------------------------------------
 def botCreadorVales(vales_agrupados, valores, usuario):
     # FUNCIONANDO OK
-    print(valores)
+
     # recordar el indice donde se quedó en cada iteración
     # INSTANCIAR VARIABLES
     index = 0
     debug = 0
     suma = 0
+
+    if debug:
+        print("BOT CREADOR DE VALES\n")
+        print("valores: {}".format(valores))
+        print("vales agrupados: {}".format(vales_agrupados))
 
     # VARIABLES DEL SUBVALE 1 DE 2
     fecha = ""
@@ -462,7 +467,11 @@ def botAgrupador(lista_vales):
     debug = 0
     diccionario = {}
     size = len(lista_vales)
-    print("tamaño: {}".format(size))
+    print("tamaño: {}".format(size)) if debug else 0
+
+    if debug:
+        print("BOT AGRUPADOR \n")
+        print(lista_vales)
 
     # FUNCION 1, ORDENAR VALES
     vale_doble = 0
@@ -470,8 +479,10 @@ def botAgrupador(lista_vales):
     orden = []
     for index, concepto in enumerate(lista_vales):
 
+        # LA LISTA DE VALES SIEMPRE VIENE EN PARES [2, 0]
         if index % 2 > 0:
-            print("\nindex par") if debug else 0
+            # confirmar que lista_vales viene doble
+            # print("\nindex par") if debug else 0
             print(concepto) if debug else 0
 
             if concepto > 0:
@@ -490,7 +501,7 @@ def botAgrupador(lista_vales):
     # FUNCION DOS, CREAR DICCIONARIO
     contador = 0
     index = 0
-    print("\n Nueva funcion \n")
+    print("\n Nueva funcion \n") if debug else 0
     for sub_index, conceptos in enumerate(orden):
         print("subindex: {} conceptos: {}".format(sub_index, conceptos)) if debug else 0
         if conceptos == 2:
@@ -526,6 +537,7 @@ def botAgrupador(lista_vales):
 
 
 def botSeparador(valores, conceptos_totales):
+    # REPARADO 08/06
     """
     Extraer valores indexados de la lista valores,
     :param valores: dataframe
@@ -539,7 +551,7 @@ def botSeparador(valores, conceptos_totales):
     ruta_anterior = 0
     contador_conceptos = 0
     lista = []
-    debug = 1
+    debug = 0
     print("\n botFormuladorVale botSeparador \n") if debug else 0
 
     for concepto in range(conceptos_totales):
@@ -575,8 +587,8 @@ def botSeparador(valores, conceptos_totales):
                             print(fecha)
                             print(ruta)
                             print("semana: {}, dia: {}, index: {}, concepto: {}\n".format(semana, dia, concepto,
-                                                                                          contador_conceptos)) \
- \
+                                                                                          contador_conceptos))
+
                     else:  # dia diferente
                         lista.append(contador_conceptos)
                         index += 1
@@ -591,14 +603,14 @@ def botSeparador(valores, conceptos_totales):
                             print("semana: {}, dia: {}, index: {}, concepto: {}\n".format(semana, dia, concepto,
                                                                                           contador_conceptos))
 
-                        if concepto == conceptos_totales - 1:
-                            print("FINAL")
-                            lista.append(contador_conceptos)
+                    if concepto == conceptos_totales - 1:
+                        print("FINAL") if debug else 0
+                        lista.append(contador_conceptos)
 
-                            largo = len(lista)
-                            if largo % 2 > 0:
-                                print("CADENA IMPAR, completar con 0")
-                                lista.append(0)
+                        largo = len(lista)
+                        if largo % 2 > 0:
+                            print("CADENA IMPAR, completar con 0")
+                            lista.append(0)
 
                 else:  # semana diferente
                     lista.append(contador_conceptos)
