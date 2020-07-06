@@ -464,7 +464,7 @@ def botAgrupador(lista_vales):
     :param lista_vales: lista de conceptos por subvale
     :return: diccionario con los conceptos agruapdos,
     """
-    debug = 0
+    debug = 1
     diccionario = {}
     size = len(lista_vales)
     print("tamaño: {}".format(size)) if debug else 0
@@ -551,7 +551,7 @@ def botSeparador(valores, conceptos_totales):
     ruta_anterior = 0
     contador_conceptos = 0
     lista = []
-    debug = 0
+    debug = 1
     print("\n botFormuladorVale botSeparador \n") if debug else 0
 
     for concepto in range(conceptos_totales):
@@ -560,7 +560,9 @@ def botSeparador(valores, conceptos_totales):
         fecha = valores.fecha[concepto]
         ruta = valores.grupo[concepto]
 
-        if concepto == 0:  # inicio de iteración
+        print("conceptos totales: {}".format(conceptos_totales)) if debug else 0
+
+        if concepto == 0 and conceptos_totales > 1:  # inicio de iteración
             contador_conceptos = 1
             index = 0
             semana_anterior = semana
@@ -571,6 +573,11 @@ def botSeparador(valores, conceptos_totales):
                 print(fecha)
                 print(
                     "semana: {}, dia: {}, index: {}, concepto: {}\n".format(semana, dia, concepto, contador_conceptos))
+
+        elif conceptos_totales == 1:
+            contador_conceptos = 1
+            lista.append(contador_conceptos)
+            lista.append(0)
 
         elif concepto > 0:  # duracion de iteracion
 
