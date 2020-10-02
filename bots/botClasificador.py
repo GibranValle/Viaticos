@@ -72,12 +72,17 @@ def clasificador(concepto):
 
     # CATEGORIA NO.3 ALIMENTOS
     tag = "alimento"
-    cadena = "Desayuno|Comida|Cena|Agua"
+    cadena = "Desayuno|Comida|Cena|Agua|Consumo"
     alimentos = etiquetador(tag, cadena, concepto)
 
     # CATEGORIA NO.4 SERVICIO
     tag = "servicio"
     cadena = "Paq|Imp|Cop"
+    servicios = etiquetador(tag, cadena, concepto)
+
+    # CATEGORIA NO.4 SERVICIO
+    tag = "material menor"
+    cadena = "Material"
     servicios = etiquetador(tag, cadena, concepto)
 
     # CATEGORIA NO.6 INGRESO

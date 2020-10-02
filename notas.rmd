@@ -1,0 +1,21 @@
+---
+title: "R Notebook"
+author: Gibran
+date: 18/09/2020
+output: html_notebook
+---
+
+----- elementos del diccionario para bot reportador --------
+RUTA
+FECHA
+CLASIFICACION | CONCEPTO O TRAYECTO | IMPORTE
+CASETAS AUTORIZADAS | X | X
+GASOLINA | X | X
+HOSPEDAJE | X | X
+AUTOBUS | X | X
+PAQUETERIA | X | X
+REFACCIONES O HERRAMIENTA | X | X
+ESTACIONAMIENTO | X | X
+OTROX | X | X
+
+ALIMENTOS/TAXI | X | X

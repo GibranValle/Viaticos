@@ -40,7 +40,16 @@ from bots.botContador import saldoDiario as sd
 from bots.botEstructurador import estructurarFecha as ef
 from bots.botEstructurador import estructurarImporte as ei
 from bots.botFormuladorVale import llenarVales as cv
+
 pd.options.mode.chained_assignment = None  # default='warn'
+
+from bots.botReportador import organizador as og
+
+import openpyxl
+from openpyxl.styles import NamedStyle, Font, Border, Side, NumberFormatDescriptor, Alignment
+from openpyxl.styles import numbers, alignment
+from openpyxl.utils import get_column_letter
+import re
 
 # TAG PARA PDF
 usuario = "Gibran Valle"
@@ -91,6 +100,178 @@ ingreso_col = [
     "fecha",
     "importe",
 ]
+# columnas a usar para el reporte pdf
+columns_report = [
+    "FECHA",
+    "CASETAS",
+    "GASOLINA",
+    "HOSPEDAJE",
+    "PAQUETERIA",
+    "REFA - HERRA",
+    "ESTACIONAMIENTO",
+    "OTROS",
+    "ALIMENTO - TAXI 1",
+    "ALIMENTO - TAXI 2",
+    "ALIMENTO - TAXI 3",
+    "ALIMENTO - TAXI 4",
+    "ALIMENTO - TAXI 5",
+    "ALIMENTO - TAXI 6",
+    "ALIMENTO - TAXI 7",
+    "ALIMENTO - TAXI 8",
+    "ALIMENTO - TAXI 9"
+]
+# columnas extraidas del excel
+columns_excel = [
+    "fecha",
+    "dia",
+    "semana",
+    "orden",
+    "concepto",
+    "detalles",
+    "proveedor",
+    "importe",
+    "saldo diario",
+    "comprobante",
+    "clasificacion",
+    "grupo"
+]
+
+
+# --------------- FUNCIONES DEL PROGRAMA ------------------------------------
+def as_text(value):
+    if value is None:
+        return ""
+    return str(value)
+
+
+def aplicarFormatos():
+    # estilo de borde
+    thin = Side(border_style="thin", color="000000")
+    double = Side(border_style="double", color="ff0000")
+
+    # color de celda
+    my_red = openpyxl.styles.colors.Color(rgb='F2F2F2')
+    my_fill = openpyxl.styles.fills.PatternFill(patternType='solid', fgColor=my_red)
+
+    # elementos de formato
+    normal = NamedStyle(name="normal")
+    normal.font = Font(bold=False, size=11, name="verdana")
+    normal.number_format = numbers.FORMAT_GENERAL
+    normal.alignment.wrap_text = False
+    # 'bottom', 'top', 'distributed', 'justify', 'center'
+    normal.alignment.vertical = "center"
+    normal.alignment.horizontal = "center"
+    normal.border = Border(top=thin, left=thin, right=thin, bottom=thin)
+
+    # elementos de formato
+    bold = NamedStyle(name="bold")
+    bold.font = Font(bold=True, size=11, name="verdana")
+    bold.number_format = numbers.FORMAT_GENERAL
+    bold.alignment.wrap_text = False
+    # 'bottom', 'top', 'distributed', 'justify', 'center'
+    bold.alignment.vertical = "center"
+    bold.alignment.horizontal = "center"
+    bold.border = Border(top=thin, left=thin, right=thin, bottom=thin)
+
+    # formato de fecha
+    fecha = NamedStyle(name="fecha")
+    fecha.font = Font(bold=True, size=11, name="verdana")
+    fecha.number_format = numbers.FORMAT_DATE_DMYSLASH
+    fecha.alignment.wrap_text = False
+    # 'bottom', 'top', 'distributed', 'justify', 'center'
+    fecha.alignment.vertical = "center"
+    fecha.alignment.horizontal = "center"
+    fecha.border = Border(top=thin, left=thin, right=thin, bottom=thin)
+
+    # formato de numero
+    money = NamedStyle(name="money")
+    money.font = Font(bold=False, size=11, name="verdana")
+    money.number_format = numbers.FORMAT_CURRENCY_USD_SIMPLE
+    money.alignment.wrap_text = False
+    # 'bottom', 'top', 'distributed', 'justify', 'center'
+    money.alignment.vertical = "center"
+    money.alignment.horizontal = "center"
+    money.border = Border(top=thin, left=thin, right=thin, bottom=thin)
+
+    # iterar por todas las filas
+    for i, row in enumerate(ws.iter_rows(ws.min_row, ws.max_row)):
+        # print(i)
+        ws.row_dimensions[i + 1].height = 40
+        # print(row[0])
+        # iterar en cada columna de la fila
+        for cell in row:
+            column_number = cell.column
+            column_letter = get_column_letter(column_number)
+            # print(column_letter)
+            # print(cell)
+            cell.style = normal
+            cell.fill = my_fill
+
+            if column_letter == "A":
+                cell.style = fecha
+                cell.fill = my_fill
+            elif (column_letter == "H") or (column_letter == "I"):
+                cell.style = money
+                cell.fill = my_fill
+            elif (column_letter == "L") or (column_letter == "J"):
+                cell.style = bold
+                cell.fill = my_fill
+    return
+
+
+def ajustarAncho():
+    # iteracion por todas las columns para ajustar el ancho
+    for columns in ws.columns:
+        max_length = 0
+        # print(column_cells)  imprime lista de todas las columnas
+        column = columns[0]  # columna inicial
+        column_number = column.column
+        column_letter = get_column_letter(column_number)
+        # print(columns[0])  #imprime solo la columna inicial
+        # print(column)
+        # print(column_letter)
+
+        # iteracion por fila
+        for i, cell in enumerate(columns):
+            # print("celda: {},{}".format(str(column_number), i))
+            l = len(str(cell.value))
+            # print(l)
+            if (l > max_length):
+                max_length = l
+
+            adjusted_width = (max_length + 2) * 1.3  # arbitrario
+            ws.column_dimensions[column_letter].width = adjusted_width
+    return
+
+
+def crearFormula():
+    # iteracion por filas para armar la formula
+    for i, rows in enumerate(ws.rows):
+
+        if i > 0:
+            # SUMIFS FORMULAS
+            # ws["M2"] = "=WEEKDAY(A2)"
+
+            intervalo_semana = "C" + str(ws.min_row + 1) + ":C" + str(ws.max_row)
+            intervalo_dia = "B" + str(ws.min_row + 1) + ":B" + str(ws.max_row)
+            intervalo_suma = "H" + str(ws.min_row + 1) + ":H" + str(ws.max_row)
+
+            # print(intervalo_dia)
+            # print(intervalo_semana)
+            # print(intervalo_suma)
+
+            # =SUMAR.SI.CONJUNTO($I$25:$I$161;$C$25:$C$161;DIASEM(B34);$D$25:$D$161;NUM.DE.SEMANA(B34))
+            # formula_excel = "=SUMAR.SI.CONJUNTO(" + intervalo_suma + "," + intervalo_dia + "," + "DIASEM(A" + str(
+            # i + 1) + ")," + intervalo_semana + "," + "NUM.DE.SEMANA(A" + str(i + 1) + "))"
+            formula = "=SUMAR.SI.CONJUNTO(" + intervalo_suma + "," + intervalo_dia + "," + "DIASEM(A" + str(
+                i + 1) + ")," + intervalo_semana + "," + "NUM.DE.SEMANA(A" + str(i + 1) + "))"
+            # print(formula)
+            ws["I" + str(i + 1)] = formula
+    return
+
+
+# --------------- INICIO DEL PROGRAMA ------------------------------------
+
 
 # --------------- INICIO DEL PROGRAMA ------------------------------------
 # cargar archivo xls en el directorio
@@ -162,3 +343,37 @@ data.drop(["mes"], axis=1, inplace=True)
 data.to_excel("outputs/viaticos2020.xlsx", index=False)
 print("\nDataframe final:")
 print(data.head())
+
+# TODO: MANIPULAR EXCEL
+wb = openpyxl.load_workbook("outputs/viaticos2020.xlsx")
+ws = wb.active
+cells = ws["A1:L00"]
+
+# tamaño de celda
+# ws.column_dimensions['A'].auto_size = True
+# ws.column_dimensions['A'].bestFit = True
+# ws.column_dimensions['A'].width = 15
+# ws.row_dimensions[1].height = 30
+
+# aplicar formatos
+aplicarFormatos()
+
+# crearformula
+crearFormula()
+
+# ajustar ancho
+ajustarAncho()
+
+# crear el nuevo archivo
+wb.save("outputs/viaticos_formato.xlsx")
+
+# TODO LLENAR PDF
+# cargar archivo xls en el directorio
+excel = "outputs/viaticos2020.xlsx"
+# dataframe completo, si no hay fecha no es una columna valida
+data = pd.read_excel(excel, header=0, names=columns_excel)
+data = data.dropna(subset=["fecha"])
+print("\nARCHIVO FINAL ORDENADO:\n")
+print(data.head())
+# llenar el nuevo dataframe
+reporte = og(data)

@@ -464,7 +464,7 @@ def botAgrupador(lista_vales):
     :param lista_vales: lista de conceptos por subvale
     :return: diccionario con los conceptos agruapdos,
     """
-    debug = 1
+    debug = 0
     diccionario = {}
     size = len(lista_vales)
     print("tamaño: {}".format(size)) if debug else 0
@@ -551,7 +551,7 @@ def botSeparador(valores, conceptos_totales):
     ruta_anterior = 0
     contador_conceptos = 0
     lista = []
-    debug = 1
+    debug = 0
     print("\n botFormuladorVale botSeparador \n") if debug else 0
 
     for concepto in range(conceptos_totales):
